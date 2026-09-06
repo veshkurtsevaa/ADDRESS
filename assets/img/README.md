@@ -18,7 +18,7 @@ back to the grey placeholder rather than a broken-image icon.
 `index-04-about.jpg` and `index-05-contacts.jpg` are unused since the index
 dropped its About and Contacts rows; they are kept for a future slide.
 
-`index-03-hotels.jpg` is a copy of `photo_2026-08-30 00.21.42.jpeg`; the file
+`index-03-hotels.jpg` is a copy of `../_src/photo_2026-08-30 00.21.42.jpeg`; the file
 names keep their original numbering, so `index-03-concierge.jpg` now sits in
 row 04. All the others are 1080×1440 (3:4) and the media box is 3:4 to match, so each frame
 shows in full with no crop. A replacement shot at a different ratio will be
@@ -37,7 +37,7 @@ cropped to 3:4 by `object-fit: cover` — either crop it to 3:4 first, or adjust
 | `svc-04-concierge.jpg`   | 04 — Concierge    | Laid round table under a brass pendant         |
 | `svc-05-closing.jpg`     | 05 — Closing      | Freestanding bath against travertine and oak   |
 
-All seven are copies of `photo_2026-08-30 *.jpeg` frames, kept at their
+All seven are copies of `../_src/photo_2026-08-30 *.jpeg` frames, kept at their
 original 3:4. The spread frames are 4:5, so `object-fit: cover` trims a little
 top and bottom; `svc-05` is a full-bleed background, cropped by design.
 
@@ -70,8 +70,8 @@ It is 1440×1920 (3:4) and is used as a full-bleed background, inset past the
 section edges in `styles.css`, so it is cropped by design — same as
 `about-07`. The trip-brief slide below it is flat navy, with no photo.
 
-The `photo_2026-08-30 *.jpeg` files are the rest of that upload, kept for
-future slides; nothing references them yet.
+The rest of that upload lives in `assets/_src/` as `photo_2026-08-30 *.jpeg`;
+nothing references those files, and they are not deployed.
 
 The photos carry their own white border, so `styles.css` drops the
 placeholder's hairline border whenever a photo is present — otherwise it reads

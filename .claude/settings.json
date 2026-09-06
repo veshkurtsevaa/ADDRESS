@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./assets/img/*.jpg)",
+      "Read(./assets/img/*.jpeg)",
+      "Read(./assets/img/*.png)",
+      "Read(./assets/video/*.mp4)",
+      "Read(./assets/fonts/*.otf)",
+      "Read(./assets/fonts/*.woff)",
+      "Read(./assets/fonts/*.woff2)",
+      "Read(./assets/_src/*)",
+      "Read(./docs/refs/*.jpeg)",
+      "Read(./favicon.ico)"
+    ]
+  }
+}

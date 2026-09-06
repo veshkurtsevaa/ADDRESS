@@ -38,8 +38,8 @@ nothing referenced them once the tags moved to Work Sans.
 
 ## NewParis Skyline
 
-No longer referenced. `NewParisSkyline-Regular.woff2` and `.woff` are still in
-this folder; nothing loads them.
+Removed. The face was never applied by any rule, so the `@font-face` block
+and both files were dropped.
 
 ## Fraunces
 

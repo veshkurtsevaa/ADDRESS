@@ -1,8 +1,11 @@
 .git
 .github
+.claude
 .wrangler
 node_modules
 wrangler.toml
 .assetsignore
 .gitignore
 docs
+assets/_src
+*.md
