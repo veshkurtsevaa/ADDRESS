@@ -15,8 +15,8 @@ back to the grey placeholder rather than a broken-image icon.
 | `index-03-hotels.jpg`    | 03 — Hotel Booking   | Hotel lounge under a vault, arched window     |
 | `index-03-concierge.jpg` | 04 — Concierge       | Pool and loungers beside a villa in the jungle |
 
-`index-04-about.jpg` and `index-05-contacts.jpg` are unused since the index
-dropped its About and Contacts rows; they are kept for a future slide.
+`index-04-about.jpg` and `index-05-contacts.jpg` went to `assets/_src/` when
+the index dropped its About and Contacts rows. There are no plans for them.
 
 `index-03-hotels.jpg` is a copy of `../_src/photo_2026-08-30 00.21.42.jpeg`; the file
 names keep their original numbering, so `index-03-concierge.jpg` now sits in
