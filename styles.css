@@ -1097,10 +1097,10 @@ button { font-family: inherit; }
 }
 .form-field:focus-within::after { width: 100%; }
 
-/* Кнопка отправки: жёлтое пятно, у которого нет края. Форму держит не диск
-   с границей, а сильно размытая заливка, поэтому кнопка тает в листе вместо
-   того чтобы лежать на нём кружком. Синий круг размером с курсор ходит по
-   ней вместо самого курсора (script.js прячет курсор и ведёт --send-x /
+/* Кнопка отправки: в покое чёткий жёлтый круг, под курсором он расплывается.
+   Заливка живёт на псевдоэлементе, поэтому её можно размыть, не тронув слово:
+   размытие включается вместе с синим кругом и гаснет вместе с ним. Синий круг
+   кнопка рисует внутри себя (script.js прячет курсор и ведёт --send-x /
    --send-y), а слово вычитает то, что под ним, и читается и на жёлтом,
    и на синем, как надпись на кнопке в шапке. */
 .form-submit {
@@ -1110,11 +1110,12 @@ button { font-family: inherit; }
   font-family: var(--font-ui); font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;
   transition: transform 0.45s var(--ease);
 }
-/* сама заливка: размыта настолько, что грани у круга не остаётся */
+/* заливка: в покое ровный круг с чёткой границей, под курсором расплывается
+   и чуть раскрывается, чтобы пятно осталось того же размера, что круг */
 .form-submit::before {
-  content: ""; position: absolute; inset: -12%; border-radius: 50%; z-index: 0;
+  content: ""; position: absolute; inset: 0; border-radius: 50%; z-index: 0;
   background: var(--yellow);
-  filter: blur(22px); transform: scale(0.97);
+  filter: blur(0px); transform: scale(1);
   transition: transform 0.55s var(--ease), filter 0.45s ease;
   pointer-events: none;
 }
@@ -1127,12 +1128,12 @@ button { font-family: inherit; }
   pointer-events: none;
 }
 .form-submit:hover::after { opacity: 1; }
-.form-submit:hover::before { transform: scale(1.03); filter: blur(26px); }
+.form-submit:hover::before { transform: scale(1.12); filter: blur(22px); }
 /* слово лежит поверх обоих кругов и инвертирует то, что под ним */
 .form-submit__label { position: relative; z-index: 2; font-weight: 500; color: #FFFFFF; mix-blend-mode: difference; }
 .form-submit:focus-visible { outline: 2px solid var(--ink); outline-offset: 6px; }
 /* магнит срабатывает раньше, чем указатель доходит: пятно ведёт наведение */
-.form-submit.is-magnet-near::before { transform: scale(1.06); filter: blur(28px); }
+.form-submit.is-magnet-near::before { transform: scale(1.14); filter: blur(24px); }
 @media (prefers-reduced-motion: reduce) {
   .form-submit, .form-submit::before, .form-submit::after { transition: none; }
 }
