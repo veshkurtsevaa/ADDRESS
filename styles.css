@@ -1199,8 +1199,8 @@ button { font-family: inherit; }
 .contacts-s3__text .about-text { margin: 0 auto; }
 .channels {
   list-style: none;
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: calc(40 * var(--u));
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: calc(28 * var(--u));
   margin-top: calc(50 * var(--u));
   padding-top: calc(38 * var(--u));
   border-top: 1px solid var(--line-on-dark);
@@ -1211,7 +1211,7 @@ button { font-family: inherit; }
   letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.6;
 }
 .channel__value {
-  font-family: var(--font-display); font-size: calc(30 * var(--u)); line-height: 1.2;
+  font-family: var(--font-display); font-size: calc(26 * var(--u)); line-height: 1.2;
   padding-bottom: calc(4 * var(--u)); word-break: break-word;
   background-image: linear-gradient(currentColor, currentColor);
   background-size: 0% 1px; background-repeat: no-repeat; background-position: 0 100%;
