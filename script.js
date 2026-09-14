@@ -262,6 +262,7 @@
       if (hit && hit.closest('[data-cursor-plain]')) hit = null;
       if (!hit) {
         cursor.classList.remove('is-hover');
+        cursor.classList.remove('is-send');
         label.textContent = '';
         /* the lens has to go with it: leaving a header link straight onto the
            page never crosses another link, so nothing else would close it */
@@ -279,6 +280,10 @@
       /* the call to action draws the circle inside itself, so the cursor's
          own disc gets out of the way instead of blending over the yellow */
       cursor.classList.toggle('is-fill', !!target.closest('.nav-cta'));
+
+      /* над жёлтой кнопкой Send круг курсора синий: разностное смешение
+         над жёлтым дало бы цвет, которого в палитре нет */
+      cursor.classList.toggle('is-send', !!target.closest('.form-submit'));
     });
   }
 
