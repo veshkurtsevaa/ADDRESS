@@ -104,6 +104,10 @@ button { font-family: inherit; }
   opacity: 0; transition: opacity 0.2s ease;
 }
 .cursor.is-hover .cursor__label { opacity: 1; }
+/* внутри жёлтой кнопки Send круг курсора синий и кладётся как есть:
+   инверсия дала бы над жёлтым случайный цвет */
+.cursor.is-send { background: #213E60; mix-blend-mode: normal; }
+.cursor.is-send .cursor__label { color: var(--paper); }
 
 /* the lens: the circle turns into a glass holding a magnified copy of the
    word underneath it, so the header needs no underline to answer a hover */
@@ -912,9 +916,9 @@ button { font-family: inherit; }
   gap: calc(110 * var(--u));
 }
 .svc-intro .about-photo { width: 100%; aspect-ratio: 3 / 4; }
-.svc-intro .about-title { font-size: calc(72 * var(--u)); }
+.svc-intro .about-title { font-size: calc(60 * var(--u)); }
 .svc-intro .about-note { margin: 0 0 calc(26 * var(--u)); }
-.svc-intro .about-text--lead { font-size: calc(34 * var(--u)); max-width: calc(860 * var(--u)); }
+.svc-intro .about-text--lead { font-size: calc(28 * var(--u)); max-width: calc(860 * var(--u)); }
 
 /* a service spread: copy on one side, photography on the other.
    --mirror swaps the columns, so consecutive services alternate. */
@@ -925,25 +929,22 @@ button { font-family: inherit; }
 }
 .svc--mirror { grid-template-columns: calc(700 * var(--u)) 1fr; }
 
-/* the number and the tag are one line, "(01) personal", set at the label
-   size and in one tone: two stacked lines were two starts to the same spread */
-.svc__num { margin-right: calc(6 * var(--u)); }
-.svc__tag { margin: 0 0 calc(14 * var(--u)); }
-.svc__text .about-title { font-size: calc(52 * var(--u)); margin-bottom: calc(22 * var(--u)); }
-.svc__text .about-text { max-width: calc(700 * var(--u)); }
-.svc__deliverable { margin-top: calc(16 * var(--u)); opacity: 0.82; }
+.svc__text .about-title { font-size: calc(44 * var(--u)); margin-bottom: calc(22 * var(--u)); }
+.svc__text .about-text { font-size: calc(22 * var(--u)); max-width: calc(700 * var(--u)); }
+/* описание под услугой набрано мельче основного абзаца */
+.svc__text .svc__deliverable { font-size: calc(19 * var(--u)); margin-top: calc(16 * var(--u)); opacity: 0.82; }
 
 
 .svc-list { list-style: none; margin: calc(26 * var(--u)) 0 0; display: grid; gap: calc(14 * var(--u)); }
 .svc-list li {
   position: relative;
   padding-left: calc(34 * var(--u));
-  font-size: calc(26 * var(--u));
+  font-size: calc(22 * var(--u));
   line-height: 1.4;
   max-width: calc(700 * var(--u));
 }
 .svc-list li::before {
-  content: "→";
+  content: "•";
   position: absolute; left: 0; top: 0;
   font-family: var(--font-ui);
   opacity: 0.5;
@@ -952,14 +953,14 @@ button { font-family: inherit; }
 .svc-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: calc(20 * var(--u)); margin-top: calc(38 * var(--u)); }
 .svc-price__value {
   font-family: var(--font-num);
-  font-size: calc(26 * var(--u));
+  font-size: calc(22 * var(--u));
   letter-spacing: 0.01em;
-  padding: calc(13 * var(--u)) calc(28 * var(--u));
+  padding: calc(12 * var(--u)) calc(26 * var(--u));
   border: 1px solid currentColor;
   border-radius: 999px;
   white-space: nowrap;
 }
-.svc-price__note { font-size: calc(18 * var(--u)); opacity: 0.7; }
+.svc-price__note { font-size: calc(16 * var(--u)); opacity: 0.7; }
 
 /* every service photograph carries its own white border, so the frame keeps
    the shot's own proportions (3:4) and shows it whole: cropping it to a
@@ -980,47 +981,25 @@ button { font-family: inherit; }
   width: 100%; height: 100%;
   object-fit: contain;
 }
-/* the pair sits staggered, the way the two hotel frames do on About */
-.svc__media--pair { display: grid; grid-template-columns: 1fr 1fr; gap: calc(38 * var(--u)); }
-.svc__media--pair .svc-float:first-child { margin-top: calc(70 * var(--u)); }
-.svc__media--pair .svc-float:last-child { margin-bottom: calc(70 * var(--u)); }
-
-/* the tilt and the drift sit on a wrapper, so they compose with the blur
-   reveal on the frame itself instead of fighting it for the transform */
-.svc-float {
-  --tilt: 2deg;
-  animation: svc-drift 7s ease-in-out infinite alternate;
-  will-change: transform;
-}
-.svc-float--a { --tilt: 1.6deg; animation-delay: -2.4s; }
-.svc-float--b { --tilt: 2.4deg; animation-delay: -5.1s; }
-@keyframes svc-drift {
-  from { transform: rotate(var(--tilt)) translateY(calc(-8 * var(--u))); }
-  to   { transform: rotate(var(--tilt)) translateY(calc(10 * var(--u))); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .svc-float { animation: none; transform: rotate(var(--tilt)); }
-}
+/* the pair stands level: both frames share one top line, with no tilt and
+   no drift, so the spread reads as two photographs and not as a collage */
+.svc__media--pair { display: grid; grid-template-columns: 1fr 1fr; gap: calc(38 * var(--u)); align-items: start; }
 
 /* ---- narrow screens: the same stacked fallback as the About slides ---- */
 @media (max-width: 900px) {
   .svc-intro, .svc, .svc--mirror { grid-template-columns: 1fr; gap: 28px; }
   #service-intro .about-slide__canvas { padding-top: 128px; }
   .svc-intro .about-title, .svc__text .about-title { font-size: clamp(26px, 7.4vw, 38px); margin-bottom: 14px; }
-  .svc-intro .about-text--lead { font-size: 17px; max-width: none; }
+  .svc-intro .about-text--lead { font-size: 16px; max-width: none; }
   .svc-intro .about-photo { order: -1; }
   .svc__text .about-text, .svc-list li { max-width: none; }
-  .svc__num { margin-right: 4px; }
-  .svc__tag { margin-bottom: 10px; }
   .svc__deliverable { margin-top: 12px; }
   .svc-list { gap: 10px; margin-top: 18px; }
-  .svc-list li { font-size: 16px; padding-left: 22px; }
+  .svc-list li { font-size: 15px; padding-left: 22px; }
   .svc-price { gap: 12px; margin-top: 24px; }
   .svc-price__value { font-size: 16px; padding: 11px 20px; }
   .svc-price__note { font-size: 12px; }
   .svc__media--pair { gap: 10px; }
-  .svc__media--pair .about-photo:first-child,
-  .svc__media--pair .about-photo:last-child { margin: 0; }
 }
 
 /* =========================================================
@@ -1125,7 +1104,7 @@ button { font-family: inherit; }
 
 .form-submit {
   position: relative; flex-shrink: 0; width: 176px; height: 176px; border-radius: 50%;
-  background: var(--olive); color: var(--paper); border: 1px solid var(--olive); cursor: pointer; will-change: transform;
+  background: var(--yellow); color: var(--ink); border: 1px solid var(--yellow); cursor: pointer; will-change: transform;
   font-family: var(--font-ui); font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;
   transition: background-color 0.45s ease, color 0.45s ease, border-color 0.45s ease, transform 0.45s var(--ease);
 }
@@ -1133,17 +1112,17 @@ button { font-family: inherit; }
    comes near and burns brighter once it is over the button */
 .form-submit::before {
   content: ""; position: absolute; inset: -18%; border-radius: 50%; z-index: -1;
-  background: var(--olive);
+  background: var(--yellow);
   filter: blur(26px); opacity: 0; transform: scale(0.82);
   transition: opacity 0.45s ease, transform 0.55s var(--ease);
   pointer-events: none;
 }
 .form-submit:hover { transform: scale(1.04); }
 .form-submit:hover::before { opacity: 0.85; transform: scale(1.12); }
-.form-submit:focus-visible { outline: 2px solid var(--olive-dark); outline-offset: 6px; }
+.form-submit:focus-visible { outline: 2px solid var(--ink); outline-offset: 6px; }
 .form-submit:focus-visible::before { opacity: 0.7; transform: scale(1.06); }
 /* the magnet fires before the pointer arrives, so the glow leads the hover */
-.form-submit.is-magnet-near { background: var(--olive-dark); color: var(--paper); border-color: var(--olive-dark); }
+.form-submit.is-magnet-near { background: #DBD75F; color: var(--ink); border-color: #DBD75F; }
 .form-submit.is-magnet-near::before { opacity: 0.6; transform: scale(1.06); }
 @media (prefers-reduced-motion: reduce) {
   .form-submit, .form-submit::before { transition: none; }
@@ -1159,6 +1138,9 @@ button { font-family: inherit; }
 .contact-info__label { font-family: var(--font-ui); font-size: 15px; font-weight: 500; }
 .contact-info__value { font-family: var(--font-ui); font-size: 15px; font-weight: 300; color: var(--ink-soft); word-break: break-word; }
 .contact-info__value:hover { color: var(--pink); }
+/* на Service этот блок живёт без курсорного круга, и подсветка ссылки
+   тоже снята: почта и телефоны читаются одним тоном */
+.contact-info[data-cursor-plain] .contact-info__value:hover { color: var(--ink-soft); }
 /* the numbers stack, so the label keeps sitting next to the first of them */
 .contact-info__values { display: flex; flex-direction: column; gap: 6px; }
 
