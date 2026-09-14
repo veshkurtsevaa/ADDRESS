@@ -104,10 +104,6 @@ button { font-family: inherit; }
   opacity: 0; transition: opacity 0.2s ease;
 }
 .cursor.is-hover .cursor__label { opacity: 1; }
-/* внутри жёлтой кнопки Send круг курсора синий и кладётся как есть:
-   инверсия дала бы над жёлтым случайный цвет */
-.cursor.is-send { background: #213E60; mix-blend-mode: normal; }
-.cursor.is-send .cursor__label { color: var(--paper); }
 
 /* the lens: the circle turns into a glass holding a magnified copy of the
    word underneath it, so the header needs no underline to answer a hover */
@@ -917,7 +913,6 @@ button { font-family: inherit; }
 }
 .svc-intro .about-photo { width: 100%; aspect-ratio: 3 / 4; }
 .svc-intro .about-title { font-size: calc(60 * var(--u)); }
-.svc-intro .about-note { margin: 0 0 calc(26 * var(--u)); }
 .svc-intro .about-text--lead { font-size: calc(28 * var(--u)); max-width: calc(860 * var(--u)); }
 
 /* a service spread: copy on one side, photography on the other.
@@ -1102,31 +1097,44 @@ button { font-family: inherit; }
 }
 .form-field:focus-within::after { width: 100%; }
 
+/* Кнопка отправки: жёлтое пятно, у которого нет края. Форму держит не диск
+   с границей, а сильно размытая заливка, поэтому кнопка тает в листе вместо
+   того чтобы лежать на нём кружком. Синий круг размером с курсор ходит по
+   ней вместо самого курсора (script.js прячет курсор и ведёт --send-x /
+   --send-y), а слово вычитает то, что под ним, и читается и на жёлтом,
+   и на синем, как надпись на кнопке в шапке. */
 .form-submit {
-  position: relative; flex-shrink: 0; width: 176px; height: 176px; border-radius: 50%;
-  background: var(--yellow); color: var(--ink); border: 1px solid var(--yellow); cursor: pointer; will-change: transform;
+  position: relative; isolation: isolate; flex-shrink: 0;
+  width: 176px; height: 176px; border-radius: 50%;
+  background: none; border: none; color: var(--ink); cursor: pointer; will-change: transform;
   font-family: var(--font-ui); font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;
-  transition: background-color 0.45s ease, color 0.45s ease, border-color 0.45s ease, transform 0.45s var(--ease);
+  transition: transform 0.45s var(--ease);
 }
-/* the glow: a wider copy of the disc, blurred, that swells as the pointer
-   comes near and burns brighter once it is over the button */
+/* сама заливка: размыта настолько, что грани у круга не остаётся */
 .form-submit::before {
-  content: ""; position: absolute; inset: -18%; border-radius: 50%; z-index: -1;
+  content: ""; position: absolute; inset: -12%; border-radius: 50%; z-index: 0;
   background: var(--yellow);
-  filter: blur(26px); opacity: 0; transform: scale(0.82);
-  transition: opacity 0.45s ease, transform 0.55s var(--ease);
+  filter: blur(22px); transform: scale(0.97);
+  transition: transform 0.55s var(--ease), filter 0.45s ease;
   pointer-events: none;
 }
-.form-submit:hover { transform: scale(1.04); }
-.form-submit:hover::before { opacity: 0.85; transform: scale(1.12); }
+/* синий круг: диаметр курсора и такая же мягкая граница, без ободка */
+.form-submit::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%; z-index: 1;
+  background: radial-gradient(circle 40px at var(--send-x, 50%) var(--send-y, 50%),
+                             #213E60 55%, rgba(33, 62, 96, 0) 100%);
+  opacity: 0; transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.form-submit:hover::after { opacity: 1; }
+.form-submit:hover::before { transform: scale(1.03); filter: blur(26px); }
+/* слово лежит поверх обоих кругов и инвертирует то, что под ним */
+.form-submit__label { position: relative; z-index: 2; font-weight: 500; color: #FFFFFF; mix-blend-mode: difference; }
 .form-submit:focus-visible { outline: 2px solid var(--ink); outline-offset: 6px; }
-.form-submit:focus-visible::before { opacity: 0.7; transform: scale(1.06); }
-/* the magnet fires before the pointer arrives, so the glow leads the hover */
-.form-submit.is-magnet-near { background: #DBD75F; color: var(--ink); border-color: #DBD75F; }
-.form-submit.is-magnet-near::before { opacity: 0.6; transform: scale(1.06); }
+/* магнит срабатывает раньше, чем указатель доходит: пятно ведёт наведение */
+.form-submit.is-magnet-near::before { transform: scale(1.06); filter: blur(28px); }
 @media (prefers-reduced-motion: reduce) {
-  .form-submit, .form-submit::before { transition: none; }
-  .form-submit:hover { transform: none; }
+  .form-submit, .form-submit::before, .form-submit::after { transition: none; }
 }
 
 .contact-info {
@@ -1156,6 +1164,7 @@ button { font-family: inherit; }
   .contact-form__fields { width: 100%; max-width: none; }
   .contact-form__foot { grid-column: 1; grid-row: auto; max-width: none; justify-content: flex-start; margin-top: 20px; }
   .form-submit { width: 132px; height: 132px; font-size: 11px; }
+  .form-submit::after { background: radial-gradient(circle 34px at var(--send-x, 50%) var(--send-y, 50%), #213E60 55%, rgba(33, 62, 96, 0) 100%); }
   /* the contact line stacks into label / value pairs instead of breaking raggedly */
   .contact-info { flex-direction: column; align-items: stretch; gap: 20px; }
   .contact-info__row { display: grid; grid-template-columns: auto 1fr; gap: 10px 20px; align-items: baseline; }
