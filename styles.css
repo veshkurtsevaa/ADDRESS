@@ -526,6 +526,30 @@ button { font-family: inherit; }
 .gallery__text { font-size: 17px; opacity: 0.85; margin-bottom: 16px; }
 .gallery__link { display: inline-block; }
 
+/* ---------- a case card: several frames in one card ----------
+   The review cases carry their own photographs instead of a page each, so
+   the media box holds a small track of frames and the dots under it say how
+   many there are. The dots sit outside the media box on purpose: the arrows
+   of the gallery are placed at half the height of that box, and counting the
+   dots into it would drop them below the middle of the photograph. */
+.shots__track {
+  display: flex;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.shots__track::-webkit-scrollbar { display: none; }
+.shots__item { flex: 0 0 100%; scroll-snap-align: start; }
+.gallery__card--shots .gallery__media { margin-bottom: 14px; }
+.shots__dots { display: flex; gap: 8px; margin-bottom: 20px; min-height: 7px; }
+.shots__dot {
+  width: 7px; height: 7px; padding: 0; border: none; border-radius: 50%;
+  background: rgba(28, 27, 24, 0.25); cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.shots__dot.is-active { background: var(--ink); transform: scale(1.3); }
+@media (prefers-reduced-motion: reduce) { .shots__dot { transition: none; } }
+
 .gallery__controls { margin-top: 40px; }
 .gallery__progress { height: 1px; background: var(--line); position: relative; }
 /* the bar is as wide a share of the line as the visible part is of the

@@ -407,8 +407,7 @@
      — it is core navigation, so it must work even if the animation CDN fails).
      Touch swipe, trackpad and shift+wheel are the browser's own scrolling;
      what is added here is mouse drag, the arrows and the progress bar. ---------- */
-  var gallery = document.querySelector('[data-gallery]');
-  if (gallery) {
+  document.querySelectorAll('[data-gallery]').forEach(function (gallery) {
     var gTrack = gallery.querySelector('[data-gallery-track]');
     var gBar = gallery.querySelector('[data-gallery-progress]');
     var gPrev = gallery.querySelector('[data-gallery-prev]');
@@ -522,7 +521,67 @@
     gTrack.querySelectorAll('.gallery__media img').forEach(function (img) {
       if (!img.complete) img.addEventListener('load', gPlaceArrows, { once: true });
     });
-  }
+  });
+
+  /* ---------- photo strip inside a card (the review cases) ----------
+     A case carries several frames instead of a page of its own, so the card's
+     media is a little track of its own and the dots under it say how many
+     there are and which one is showing. The frames scroll natively, the same
+     way the gallery around them does; the dots are built from the number of
+     frames, so the markup never has to be kept in step by hand. ---------- */
+  document.querySelectorAll('[data-shots]').forEach(function (shots) {
+    var sTrack = shots.querySelector('[data-shots-track]');
+    var sDots = shots.querySelector('[data-shots-dots]');
+    var sItems = sTrack ? sTrack.querySelectorAll('.shots__item') : [];
+    /* one frame needs no dots: there is nothing to say about it */
+    if (!sTrack || !sDots || sItems.length < 2) return;
+
+    var sButtons = [];
+    sItems.forEach(function (item, i) {
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'shots__dot';
+      dot.addEventListener('click', function () {
+        sTrack.scrollTo({
+          left: i * sTrack.clientWidth,
+          behavior: reduceMotion ? 'auto' : 'smooth'
+        });
+      });
+      sDots.appendChild(dot);
+      sButtons.push(dot);
+    });
+
+    /* the dots show no word, so their name comes from the dictionary and is
+       rewritten when the language changes, like every other label */
+    function sLabel() {
+      var t = window.addressI18n && window.addressI18n.t;
+      sButtons.forEach(function (dot, i) {
+        dot.setAttribute('aria-label', (t ? t('home.reviews.photo') : 'Photo') + ' ' + (i + 1));
+      });
+    }
+    sLabel();
+    document.addEventListener('address:langchange', sLabel);
+
+    /* every frame is as wide as the track, so the one in view is the scroll
+       position divided by that width */
+    function sSync() {
+      var idx = sTrack.clientWidth
+        ? Math.round(sTrack.scrollLeft / sTrack.clientWidth)
+        : 0;
+      sButtons.forEach(function (dot, i) {
+        dot.classList.toggle('is-active', i === idx);
+      });
+    }
+
+    var sTicking = false;
+    sTrack.addEventListener('scroll', function () {
+      if (sTicking) return;
+      sTicking = true;
+      requestAnimationFrame(function () { sTicking = false; sSync(); });
+    }, { passive: true });
+    window.addEventListener('resize', sSync);
+    sSync();
+  });
 
   /* ---------- interest tag picker (Contacts) — up to 2 at once,
      oldest pick evicted when a 3rd is chosen ---------- */
