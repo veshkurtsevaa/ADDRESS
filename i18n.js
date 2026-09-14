@@ -56,7 +56,7 @@
       'about.s2.lead': 'Мы консультируем, подбираем и бронируем для вас те варианты, которые становятся частью общего впечатления от поездки.',
       'about.s2.foot': 'Работаем напрямую с отелями, чтобы вы получали лучшие условия, приоритет по размещению и внимание к деталям.',
 
-      'about.s3.note': 'как мы работаем?',
+      'about.s3.note': 'Как мы работаем?',
       'about.s3.lead': 'Вы делитесь направлением, количеством дней и своими ожиданиями, а мы создаём маршрут, который точно совпадает с вашим настроением и запросом.',
 
       'about.s4.title': 'ADDRESS GUIDES',
@@ -208,7 +208,7 @@
       'about.s2.lead': 'We advise, select and book the stays that become part of how the whole trip feels.',
       'about.s2.foot': 'We work with hotels directly, so you get the best conditions, priority on rooms and attention to detail.',
 
-      'about.s3.note': 'how do we work?',
+      'about.s3.note': 'How do we work?',
       'about.s3.lead': 'You share the destination, the number of days and what you are hoping for, and we build an itinerary that matches your mood and your request exactly.',
 
       'about.s4.title': 'ADDRESS GUIDES',
