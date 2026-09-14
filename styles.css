@@ -184,6 +184,17 @@ button { font-family: inherit; }
 .lang-toggle:hover .lang-toggle__current { opacity: 0; }
 .lang-toggle:hover .lang-toggle__target { opacity: 1; }
 
+/* соцсети в шапке: только иконки, цвет наследуется от шапки */
+.social-links { display: inline-flex; align-items: center; gap: 14px; }
+.social-link {
+  display: inline-flex; color: var(--ink); opacity: 0.55;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+.social-link svg { display: block; width: 18px; height: 18px; }
+.social-link:hover { color: var(--yellow); opacity: 1; }
+.site-header.is-over-dark .social-link { color: #FFFFFF; opacity: 0.78; }
+.site-header.is-over-dark .social-link:hover { color: var(--yellow); opacity: 1; }
+
 .btn {
   display: inline-block; padding: 14px 30px; font-size: 12px;
   letter-spacing: 0.09em; text-transform: uppercase; border-radius: 999px;
@@ -307,7 +318,7 @@ button { font-family: inherit; }
 @media (max-width: 860px) {
   .site-header { padding: 12px 8px; }
   .site-header__inner { padding: 12px 20px; border-radius: 32px; }
-  .nav__list, .nav .lang-toggle, .nav .nav-cta { display: none; }
+  .nav__list, .nav .lang-toggle, .nav .nav-cta, .nav .social-links { display: none; }
   .burger { display: flex; }
   .mobile-nav {
     display: none; pointer-events: auto;
