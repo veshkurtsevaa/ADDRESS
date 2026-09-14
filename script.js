@@ -257,6 +257,9 @@
     document.addEventListener('mouseover', function (e) {
       var target = e.target.closest ? e.target : e.target.parentElement;
       var hit = target && target.closest('a, button, [data-cursor]');
+      /* inside a plain zone the cursor keeps its small dot: no circle grows
+         under the pointer and no word rides on it */
+      if (hit && hit.closest('[data-cursor-plain]')) hit = null;
       if (!hit) {
         cursor.classList.remove('is-hover');
         label.textContent = '';
