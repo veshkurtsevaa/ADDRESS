@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Numbered index accordion · snippet</title>
+
+<!-- ============================================================
+     Пронумерованный индекс-аккордеон.
+     Стоял на главной ADDRESS до сентября 2026, снят в пользу
+     слайдера карточек. Здесь лежит рабочая копия целиком:
+     разметка, стили и скрипт, без единой внешней зависимости.
+     Чтобы перенести на другой сайт, смотри README.md рядом.
+     ============================================================ -->
+
+<style>
+/* ---------- токены, которые нужны сниппету ----------
+   На чужом сайте замени значения своими или выкинь блок,
+   если такие переменные уже объявлены. */
+:root {
+  --ink: #1C1B18;
+  --paper: #F7F3EC;
+  --navy: #25304A;
+  --pink: #C2486B;
+  --line: rgba(28, 27, 24, 0.14);
+  --line-on-dark: rgba(247, 243, 236, 0.22);
+  --placeholder: #4A473F;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Work Sans', Arial, sans-serif;
+  --font-ui: var(--font-body);
+  --font-num: var(--font-body);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--font-body); line-height: 1.5;
+  padding: 80px 24px;
+}
+.demo-wrap { max-width: 1320px; margin: 0 auto; }
+.demo-label {
+  font-family: var(--font-ui); font-size: 13px; letter-spacing: 0.08em;
+  text-transform: uppercase; opacity: 0.7; margin-bottom: 14px; display: inline-block;
+}
+
+/* ---------- рамка под фото ----------
+   Своя обёртка, чтобы сниппет не зависел от .photo-placeholder сайта. */
+.acc-photo {
+  background: var(--placeholder); color: var(--paper);
+  width: 100%; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-ui); font-size: 13px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  border: 1px solid var(--line-on-dark);
+}
+.acc-photo::after { content: attr(data-ph); }
+.acc-photo__img {
+  position: absolute; inset: 0; z-index: 1;
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.acc-photo:has(.acc-photo__img) { border: none; }
+
+/* =========================================================
+   АККОРДЕОН
+   ========================================================= */
+.index-list { list-style: none; }
+.index-row {
+  border-top: 1px solid var(--line); cursor: pointer;
+}
+.index-row:last-child { border-bottom: 1px solid var(--line); }
+.index-row__head {
+  position: relative;
+  display: grid; grid-template-columns: 90px 1fr; align-items: center;
+  padding: 40px 0 40px 40px; gap: 24px; overflow: hidden;
+}
+/* clip-path circle() взят вместо скруглённого блока намеренно:
+   border-radius:50% на этом широком и низком элементе нарисовал бы
+   эллипс, потому что каждая ось скругляется по своему размеру.
+   У circle() радиус один на обе оси при любых пропорциях, так что
+   заливка никогда не выглядит овальной. --fill-r считается в скрипте
+   как точное расстояние от точки входа курсора до самого дальнего
+   угла строки, поэтому круг всегда ровно такой, чтобы накрыть строку
+   целиком, с какой стороны в неё ни зайди. */
+.index-row__head::before {
+  content: ""; position: absolute; inset: 0;
+  background: var(--navy);
+  clip-path: circle(0px at var(--fill-x, 50%) var(--fill-y, 50%));
+  transition: clip-path 0.6s var(--ease);
+  pointer-events: none; z-index: 0;
+}
+.index-row__head:hover::before {
+  clip-path: circle(var(--fill-r, 150%) at var(--fill-x, 50%) var(--fill-y, 50%));
+}
+.index-row__num, .index-row__title { position: relative; z-index: 1; }
+.index-row__num { font-family: var(--font-num); font-size: 16px; opacity: 0.55; transition: color 0.3s ease; }
+.index-row__title {
+  font-family: var(--font-display); font-size: clamp(30px, 5.2vw, 64px);
+  transition: transform 0.4s var(--ease), opacity 0.3s ease, color 0.3s ease;
+}
+.index-row__head:hover .index-row__title { transform: translateX(14px); color: var(--paper); }
+.index-row__head:hover .index-row__num { color: var(--paper); opacity: 0.85; }
+/* разворот на grid-template-rows: 0fr → 1fr, потому что он анимируется,
+   а height: auto нет. Внутренний блок обязан быть overflow: hidden
+   и min-height: 0, иначе содержимое вылезет из закрытой строки. */
+.index-row__reveal-wrap {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s var(--ease);
+}
+.index-row.is-open .index-row__reveal-wrap { grid-template-rows: 1fr; }
+.index-row__reveal {
+  overflow: hidden; min-height: 0;
+  /* колонка под фото шириной с фото, чтобы текст стоял рядом с ним,
+     а не через пустоту; текст прижат к верху, а не плавает по центру */
+  display: grid; grid-template-columns: minmax(0, 306px) 1fr; gap: 40px; align-items: start;
+}
+.index-row.is-open .index-row__reveal { padding-top: 32px; padding-bottom: 40px; }
+.index-row__reveal-media .acc-photo { aspect-ratio: 3 / 4; }
+/* пока строка раскрыта, её фотография дрейфует, и панель не стоит мёртво */
+.index-row.is-open .index-row__reveal-media .acc-photo__img {
+  animation: index-photo-drift 9s ease-in-out infinite alternate;
+}
+@keyframes index-photo-drift {
+  from { transform: scale(1.05) translate(-1%, -1.4%); }
+  to   { transform: scale(1.09) translate(1%, 1.4%); }
+}
+.index-row__reveal-text p { font-size: 18px; margin-bottom: 20px; opacity: 0.85; }
+.index-row__reveal-text a {
+  color: inherit; text-decoration: none;
+  font-family: var(--font-ui); font-size: 12px; text-transform: uppercase;
+  letter-spacing: 0.08em; border-bottom: 1px solid var(--pink); padding-bottom: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .index-row.is-open .index-row__reveal-media .acc-photo__img { animation: none; }
+  .index-row__reveal-wrap { transition: none; }
+  .index-row__head::before { transition: none; }
+}
+@media (max-width: 700px) {
+  .index-row__head { grid-template-columns: 50px 1fr; padding: 28px 0 28px 24px; }
+  .index-row__reveal { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="demo-wrap">
+  <p class="demo-label">указатель</p>
+
+  <ul class="index-list">
+    <li class="index-row">
+      <div class="index-row__head">
+        <span class="index-row__num">01</span>
+        <span class="index-row__title">Address Personal</span>
+      </div>
+      <div class="index-row__reveal-wrap"><div class="index-row__reveal">
+        <div class="index-row__reveal-media">
+          <div class="acc-photo" data-ph="Photo 01">
+            <img class="acc-photo__img" src="../../../assets/img/index-01-personal.jpg" alt="Гостиная с каменным камином под сводчатым потолком" loading="lazy" decoding="async">
+          </div>
+        </div>
+        <div class="index-row__reveal-text">
+          <p>Гиды по городам, созданные специально для вас.</p>
+          <a href="#">Подробнее</a>
+        </div>
+      </div></div>
+    </li>
+    <li class="index-row">
+      <div class="index-row__head">
+        <span class="index-row__num">02</span>
+        <span class="index-row__title">Address Tailored</span>
+      </div>
+      <div class="index-row__reveal-wrap"><div class="index-row__reveal">
+        <div class="index-row__reveal-media">
+          <div class="acc-photo" data-ph="Photo 02">
+            <img class="acc-photo__img" src="../../../assets/img/index-02-tailored.jpg" alt="Берег океана на закате" loading="lazy" decoding="async">
+          </div>
+        </div>
+        <div class="index-row__reveal-text">
+          <p>Индивидуальные маршруты прогулок и досуга.</p>
+          <a href="#">Подробнее</a>
+        </div>
+      </div></div>
+    </li>
+    <li class="index-row">
+      <div class="index-row__head">
+        <span class="index-row__num">03</span>
+        <span class="index-row__title">Бронирование отелей</span>
+      </div>
+      <div class="index-row__reveal-wrap"><div class="index-row__reveal">
+        <div class="index-row__reveal-media">
+          <div class="acc-photo" data-ph="Photo 03">
+            <img class="acc-photo__img" src="../../../assets/img/index-03-hotels.jpg" alt="Лаунж отеля под сводчатым потолком с арочным окном во двор" loading="lazy" decoding="async">
+          </div>
+        </div>
+        <div class="index-row__reveal-text">
+          <p>Поможем вам подобрать лучший вариант проживания, учитывая все ваши предпочтения.</p>
+          <a href="#">Подробнее</a>
+        </div>
+      </div></div>
+    </li>
+    <li class="index-row">
+      <div class="index-row__head">
+        <span class="index-row__num">04</span>
+        <span class="index-row__title">Консьерж сервис</span>
+      </div>
+      <div class="index-row__reveal-wrap"><div class="index-row__reveal">
+        <div class="index-row__reveal-media">
+          <div class="acc-photo" data-ph="Photo 04">
+            <img class="acc-photo__img" src="../../../assets/img/index-03-concierge.jpg" alt="Бассейн и шезлонги рядом с виллой в джунглях" loading="lazy" decoding="async">
+          </div>
+        </div>
+        <div class="index-row__reveal-text">
+          <p>Бронируем рестораны, билеты на мероприятия и экскурсии, организуем трансферы. Берём организацию на себя.</p>
+          <a href="#">Подробнее</a>
+        </div>
+      </div></div>
+    </li>
+  </ul>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- раскрытие строки ----------
+     Открыта всегда не больше одной: повторный клик по открытой закрывает её. */
+  var indexRows = document.querySelectorAll('.index-row');
+  if (indexRows.length) {
+    indexRows.forEach(function (row) {
+      row.addEventListener('click', function () {
+        var wasOpen = row.classList.contains('is-open');
+        indexRows.forEach(function (other) { other.classList.remove('is-open'); });
+        if (!wasOpen) row.classList.add('is-open');
+      });
+    });
+  }
+
+  /* ---------- заливка строки от точки входа курсора ----------
+     --fill-r ставится в пикселях, ровно по расстоянию от точки входа до
+     самого дальнего угла строки, так что круг clip-path всегда достаточен,
+     чтобы накрыть строку целиком, и не больше того. */
+  document.querySelectorAll('.index-row__head').forEach(function (head) {
+    function setFillOrigin(e) {
+      var rect = head.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      var corners = [
+        [0, 0], [rect.width, 0], [0, rect.height], [rect.width, rect.height]
+      ];
+      var maxDist = 0;
+      corners.forEach(function (c) {
+        var d = Math.hypot(x - c[0], y - c[1]);
+        if (d > maxDist) maxDist = d;
+      });
+      head.style.setProperty('--fill-x', x + 'px');
+      head.style.setProperty('--fill-y', y + 'px');
+      head.style.setProperty('--fill-r', maxDist + 'px');
+    }
+    head.addEventListener('mouseenter', setFillOrigin);
+    head.addEventListener('mouseleave', setFillOrigin);
+  });
+})();
+</script>
+
+</body>
+</html>

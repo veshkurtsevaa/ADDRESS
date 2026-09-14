@@ -13,7 +13,7 @@
 | --- | --- |
 | Правка текста (любая страница) | `i18n.js` + соответствующий HTML |
 | Hero главной | `index.html` (секция `.hero`), `styles.css` блок `hero`, `assets/video/home-hero.mp4` |
-| Индекс-аккордеон главной | `index.html` `#index`, `styles.css` баннер `HOME`, блок `home index accordion` в `script.js` |
+| Галерея услуг главной | `index.html` `#index`, `styles.css` баннер `HOME`, блок `home gallery` в `script.js` |
 | Страница About | `about.html`, `styles.css` баннер `ABOUT` |
 | Страница Service | `service.html`, `styles.css` баннер `SERVICE` |
 | Форма и контакты | `contacts.html`, два баннера `CONTACTS` в `styles.css`, блоки `interest tag picker` / `contact forms` в `script.js` |
@@ -26,7 +26,8 @@
 Ассеты: `assets/img/` (фото), `assets/video/`, `assets/fonts/`. Что за какое
 фото отвечает, описано в `assets/img/README.md`. Сами бинарники читать не надо.
 `assets/_src/` — исходники, на сайте не используются. `docs/` — архив и
-референсы, к сайту отношения не имеют.
+референсы, к сайту отношения не имеют. Там же `docs/snippets/` — блоки,
+снятые с сайта, но сохранённые целиком, чтобы взять на другой проект.
 
 ## Локализация
 

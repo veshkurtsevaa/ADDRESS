@@ -400,43 +400,112 @@
     if (img.complete && img.naturalWidth === 0) drop();
   });
 
-  /* ---------- home index accordion (pure CSS grid-template-rows trick,
-     no GSAP/CDN dependency — must work even if the animation CDN fails) ---------- */
-  var indexRows = document.querySelectorAll('.index-row');
-  if (indexRows.length) {
-    indexRows.forEach(function (row) {
-      row.addEventListener('click', function () {
-        var wasOpen = row.classList.contains('is-open');
-        indexRows.forEach(function (other) { other.classList.remove('is-open'); });
-        if (!wasOpen) row.classList.add('is-open');
-      });
-    });
-  }
+  /* ---------- home gallery (native scroll-snap track, no GSAP/CDN dependency
+     — it is core navigation, so it must work even if the animation CDN fails).
+     Touch swipe, trackpad and shift+wheel are the browser's own scrolling;
+     what is added here is mouse drag, the arrows and the progress bar. ---------- */
+  var gallery = document.querySelector('[data-gallery]');
+  if (gallery) {
+    var gTrack = gallery.querySelector('[data-gallery-track]');
+    var gBar = gallery.querySelector('[data-gallery-progress]');
+    var gPrev = gallery.querySelector('[data-gallery-prev]');
+    var gNext = gallery.querySelector('[data-gallery-next]');
+    var gReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------- index row cursor-fill hover (fill grows from entry point) ----------
-     --fill-r is set in px to the exact distance from the entry point to the row's
-     farthest corner, so the clip-path circle is always just big enough to fully
-     cover the row — never smaller (a gap left uncovered) or arbitrarily oversized. */
-  document.querySelectorAll('.index-row__head').forEach(function (head) {
-    function setFillOrigin(e) {
-      var rect = head.getBoundingClientRect();
-      var x = e.clientX - rect.left;
-      var y = e.clientY - rect.top;
-      var corners = [
-        [0, 0], [rect.width, 0], [0, rect.height], [rect.width, rect.height]
-      ];
-      var maxDist = 0;
-      corners.forEach(function (c) {
-        var d = Math.hypot(x - c[0], y - c[1]);
-        if (d > maxDist) maxDist = d;
-      });
-      head.style.setProperty('--fill-x', x + 'px');
-      head.style.setProperty('--fill-y', y + 'px');
-      head.style.setProperty('--fill-r', maxDist + 'px');
+    /* one card plus the gap between cards: the distance an arrow moves */
+    function gStep() {
+      var card = gTrack.querySelector('.gallery__card');
+      if (!card) return gTrack.clientWidth;
+      var gap = parseFloat(getComputedStyle(gTrack).columnGap) || 0;
+      return card.getBoundingClientRect().width + gap;
     }
-    head.addEventListener('mouseenter', setFillOrigin);
-    head.addEventListener('mouseleave', setFillOrigin);
-  });
+
+    /* the bar takes the same share of the line that the visible part of the
+       track takes of its full width, so it reads as the width of the window
+       onto the cards, and then travels the remaining share of the line */
+    function gSync() {
+      var max = gTrack.scrollWidth - gTrack.clientWidth;
+      var ratio = gTrack.scrollWidth ? gTrack.clientWidth / gTrack.scrollWidth : 1;
+      var pos = max > 1 ? gTrack.scrollLeft / max : 0;
+      if (gBar) {
+        gBar.style.width = (ratio * 100) + '%';
+        gBar.style.transform = ratio < 1
+          ? 'translateX(' + (pos * (1 - ratio) / ratio * 100) + '%)'
+          : 'translateX(0)';
+      }
+      if (gPrev) gPrev.disabled = max <= 1 || pos <= 0.001;
+      if (gNext) gNext.disabled = max <= 1 || pos >= 0.999;
+    }
+
+    function gScrollBy(dir) {
+      gTrack.scrollBy({ left: dir * gStep(), behavior: gReduce ? 'auto' : 'smooth' });
+    }
+    if (gPrev) gPrev.addEventListener('click', function () { gScrollBy(-1); });
+    if (gNext) gNext.addEventListener('click', function () { gScrollBy(1); });
+
+    gTrack.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); gScrollBy(1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); gScrollBy(-1); }
+    });
+
+    /* ---------- mouse drag ----------
+       Touch is left to the browser: its own swipe has momentum and rubber
+       banding that a script cannot match, and grabbing the pointer here would
+       take the vertical page scroll away from the finger. */
+    var gDragging = false, gMoved = false, gStartX = 0, gStartLeft = 0;
+
+    gTrack.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      gDragging = true; gMoved = false;
+      gStartX = e.clientX; gStartLeft = gTrack.scrollLeft;
+    });
+
+    /* The pointer is captured only once the press has actually travelled,
+       never on pointerdown: while a capture is held the click that follows is
+       delivered to the capturing element, so capturing straight away would
+       take every card link's own click away from it. */
+    gTrack.addEventListener('pointermove', function (e) {
+      if (!gDragging) return;
+      var dx = e.clientX - gStartX;
+      if (!gMoved) {
+        if (Math.abs(dx) <= 5) return;
+        gMoved = true;
+        gallery.classList.add('is-dragging');
+        gTrack.setPointerCapture(e.pointerId);
+      }
+      gTrack.scrollLeft = gStartLeft - dx;
+    });
+
+    function gEndDrag(e) {
+      if (!gDragging) return;
+      gDragging = false;
+      gallery.classList.remove('is-dragging');
+      if (gTrack.hasPointerCapture(e.pointerId)) gTrack.releasePointerCapture(e.pointerId);
+    }
+    gTrack.addEventListener('pointerup', gEndDrag);
+    gTrack.addEventListener('pointercancel', gEndDrag);
+
+    /* a drag that ends over a link must not follow it, so the click is caught
+       on the way down, before the link sees it */
+    gTrack.addEventListener('click', function (e) {
+      if (!gMoved) return;
+      e.preventDefault();
+      e.stopPropagation();
+      gMoved = false;
+    }, true);
+    gTrack.addEventListener('dragstart', function (e) { e.preventDefault(); });
+
+    /* scroll fires far more often than a frame, so the bar is written once
+       per frame instead of once per event */
+    var gTicking = false;
+    gTrack.addEventListener('scroll', function () {
+      if (gTicking) return;
+      gTicking = true;
+      requestAnimationFrame(function () { gTicking = false; gSync(); });
+    }, { passive: true });
+    window.addEventListener('resize', gSync);
+    gSync();
+  }
 
   /* ---------- interest tag picker (Contacts) — up to 2 at once,
      oldest pick evicted when a 3rd is chosen ---------- */

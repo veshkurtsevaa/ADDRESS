@@ -353,6 +353,9 @@ button { font-family: inherit; }
   position: absolute; inset: 0; z-index: 1;
   width: 100%; height: 100%; object-fit: cover; display: block;
 }
+/* each photo carries its own white border, so the placeholder's hairline
+   would read as a second frame — it stays only on the empty placeholder */
+.photo-placeholder:has(.photo-placeholder__img) { border: none; }
 .photo-placeholder--wide { aspect-ratio: 16 / 9; }
 .photo-placeholder--tall { aspect-ratio: 3 / 4; }
 .photo-placeholder--square { aspect-ratio: 1 / 1; }
@@ -464,82 +467,86 @@ button { font-family: inherit; }
   text-wrap: pretty; font-size: 20px; text-align: center; max-width: var(--content); margin: 0 auto 48px; }
 
 /* =========================================================
-   HOME — numbered index that unfolds on scroll (gaelleperrin)
+   HOME — gallery of service cards, scrolled sideways
+   Built on native overflow + scroll-snap, so touch swipe, trackpad
+   and shift+wheel come from the browser itself; script.js only adds
+   mouse drag, the arrows and the progress bar.
    ========================================================= */
-.index-list { list-style: none; }
-.index-row {
-  border-top: 1px solid var(--line); cursor: pointer;
-}
-.index-row:last-child { border-bottom: 1px solid var(--line); }
-.index-row__head {
+.gallery {
   position: relative;
-  display: grid; grid-template-columns: 90px 1fr; align-items: center;
-  padding: 40px 0 40px 40px; gap: 24px; overflow: hidden;
+  /* the track sits outside .section__inner and lines its first card up with
+     the container by hand, so the last card can bleed past the right edge
+     and show there is more to scroll to */
+  --gallery-gutter: max(0px, calc((100% - var(--container)) / 2));
 }
-/* clip-path circle() is used instead of a scaled border-radius box on
-   purpose: border-radius:50% on this element's own (wide, short) box
-   would draw an ellipse, since it rounds each axis by that axis's own
-   size. clip-path's circle() always has one true radius in both axes
-   regardless of the element's aspect ratio, so the fill can never look
-   ovoid — --fill-r is computed in script.js as the exact distance from
-   the pointer's entry point to the row's farthest corner, so the circle
-   is always just big enough to fully cover the row from any entry point. */
-.index-row__head::before {
-  content: ""; position: absolute; inset: 0;
-  background: var(--navy);
-  clip-path: circle(0px at var(--fill-x, 50%) var(--fill-y, 50%));
-  transition: clip-path 0.6s var(--ease);
-  pointer-events: none; z-index: 0;
+.gallery__track {
+  list-style: none;
+  display: flex; gap: 32px;
+  padding-left: var(--gallery-gutter);
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--gallery-gutter);
+  cursor: grab;
+  /* the bar under the track is the visible progress, the native one would
+     only double it */
+  scrollbar-width: none; -ms-overflow-style: none;
 }
-.index-row__head:hover::before {
-  clip-path: circle(var(--fill-r, 150%) at var(--fill-x, 50%) var(--fill-y, 50%));
-}
-.index-row__num, .index-row__title { position: relative; z-index: 1; }
-.index-row__num { font-family: var(--font-num); font-size: 16px; opacity: 0.55; transition: color 0.3s ease; }
-.index-row__title {
-  font-family: var(--font-display); font-size: clamp(30px, 5.2vw, 64px);
-  transition: transform 0.4s var(--ease), opacity 0.3s ease, color 0.3s ease;
-}
-.index-row__head:hover .index-row__title { transform: translateX(14px); color: var(--paper); }
-.index-row__head:hover .index-row__num { color: var(--paper); opacity: 0.85; }
-.index-row__reveal-wrap {
-  display: grid; grid-template-rows: 0fr;
-  transition: grid-template-rows 0.5s var(--ease);
-}
-.index-row.is-open .index-row__reveal-wrap { grid-template-rows: 1fr; }
-.index-row__reveal {
-  overflow: hidden; min-height: 0;
-  /* photo column is sized to the photo, so the text sits next to it instead
-     of across a gap; text top-aligns rather than floating mid-photo */
-  display: grid; grid-template-columns: minmax(0, 306px) 1fr; gap: 40px; align-items: start;
-}
-.index-row.is-open .index-row__reveal { padding-top: 32px; padding-bottom: 40px; }
-/* the index photos are all 1080x1440, so the media box is 3:4 too and each
-   frame shows in full — no crop. */
-.index-row__reveal-media .photo-placeholder { aspect-ratio: 3 / 4; }
-/* while a row is open its photograph drifts, so the panel is never static */
-.index-row.is-open .index-row__reveal-media .photo-placeholder__img {
-  animation: index-photo-drift 9s ease-in-out infinite alternate;
-}
-@keyframes index-photo-drift {
-  from { transform: scale(1.05) translate(-1%, -1.4%); }
-  to   { transform: scale(1.09) translate(1%, 1.4%); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .index-row.is-open .index-row__reveal-media .photo-placeholder__img { animation: none; }
-}
-/* each photo carries its own white border, so the placeholder's hairline
-   would read as a second frame — it stays only on the empty placeholder */
-.photo-placeholder:has(.photo-placeholder__img) { border: none; }
-.index-row__reveal-text p { font-size: 18px; margin-bottom: 20px; opacity: 0.85; }
-@media (prefers-reduced-motion: reduce) {
-  .index-row__reveal-wrap { transition: none; }
-  .index-row__head::before { transition: none; }
-}
+.gallery__track::-webkit-scrollbar { display: none; }
+/* snapping is switched off for the length of a mouse drag: it fights
+   scrollLeft set from script, and on release the browser snaps anyway */
+.gallery.is-dragging .gallery__track { scroll-snap-type: none; cursor: grabbing; }
+.gallery.is-dragging .gallery__card { user-select: none; }
 
-@media (max-width: 700px) {
-  .index-row__head { grid-template-columns: 50px 1fr; padding: 28px 0 28px 24px; }
-  .index-row__reveal { grid-template-columns: 1fr; }
+.gallery__card {
+  flex: 0 0 clamp(280px, 33vw, 480px);
+  scroll-snap-align: start;
+}
+/* the index photos are all 1080x1440, so the media box is 3:4 too and each
+   frame shows in full, no crop */
+.gallery__media { overflow: hidden; margin-bottom: 24px; }
+.gallery__media .photo-placeholder { aspect-ratio: 3 / 4; }
+.gallery__media .photo-placeholder__img { transition: transform 0.8s var(--ease); }
+.gallery__card:hover .photo-placeholder__img { transform: scale(1.05); }
+.gallery__num { font-family: var(--font-num); font-size: 14px; opacity: 0.55; }
+.gallery__title {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(24px, 2.4vw, 34px); margin: 6px 0 14px;
+}
+.gallery__text { font-size: 17px; opacity: 0.85; margin-bottom: 16px; }
+.gallery__link { display: inline-block; }
+
+.gallery__controls {
+  display: flex; align-items: center; gap: 40px;
+  margin-top: 48px;
+  padding-left: var(--gallery-gutter); padding-right: var(--gallery-gutter);
+}
+.gallery__progress { flex: 1; height: 1px; background: var(--line); position: relative; }
+/* the bar is as wide a share of the line as the visible part is of the
+   track, and travels the rest of it — width and transform are set in JS */
+.gallery__progress-bar {
+  position: absolute; left: 0; top: -1px; height: 3px; width: 25%;
+  background: var(--ink); transition: transform 0.3s var(--ease);
+}
+.gallery__arrows { display: flex; gap: 12px; }
+.gallery__arrow {
+  width: 52px; height: 52px; border-radius: 50%;
+  border: 1px solid var(--line); background: none; color: inherit;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+}
+.gallery__arrow svg { width: 20px; height: 20px; }
+.gallery__arrow:hover:not(:disabled) { background: var(--navy); color: var(--paper); }
+.gallery__arrow:disabled { opacity: 0.25; cursor: default; }
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery__media .photo-placeholder__img,
+  .gallery__progress-bar { transition: none; }
+}
+@media (max-width: 860px) {
+  .gallery__track { gap: 20px; }
+  .gallery__card { flex-basis: 78vw; }
+  .gallery__controls { gap: 20px; margin-top: 32px; }
+  .gallery__arrow { width: 44px; height: 44px; }
 }
 
 /* quote (hedwig-style colored spread) */

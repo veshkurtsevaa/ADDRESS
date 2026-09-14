@@ -20,9 +20,9 @@
     initFramedParallax();
   });
 
-  /* Note: the Home index-list accordion (gaelleperrin-style unfold) lives in
-     script.js as plain CSS/JS on purpose — it is core navigation, not a nice-
-     to-have, so it must keep working even if this GSAP bundle fails to load. */
+  /* Note: the Home card gallery lives in script.js as plain CSS/JS on purpose
+     — it is core navigation, not a nice-to-have, so it must keep working even
+     if this GSAP bundle fails to load. */
 
   /* =========================================================
      SERVICE — the shot drifts inside its frame as the spread
