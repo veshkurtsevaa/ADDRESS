@@ -642,7 +642,7 @@ button { font-family: inherit; }
 
 /* ---- photos: the frame is fixed, the shot fills it ---- */
 .about-photo { position: relative; overflow: hidden; background: var(--placeholder); }
-.about-photo img { width: 100%; height: 100%; object-fit: cover; }
+.about-photo img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.05); }
 .about-photo--portrait { aspect-ratio: 3 / 4; }
 .about-photo--tall { aspect-ratio: 4 / 5; }
 
@@ -653,9 +653,9 @@ button { font-family: inherit; }
   gap: calc(110 * var(--u));
 }
 .about-s1 .about-photo { width: 100%; height: auto; aspect-ratio: 3 / 4; }
-.about-s1 .about-word { font-size: calc(100 * var(--u)); margin-bottom: calc(34 * var(--u)); }
+.about-s1 .about-word { font-size: calc(67 * var(--u)); margin-bottom: calc(34 * var(--u)); }
 .about-s1 .about-text--lead {
-  font-size: calc(44 * var(--u));
+  font-size: calc(29 * var(--u));
   line-height: 1.34;
   max-width: calc(900 * var(--u));
 }
@@ -732,24 +732,8 @@ button { font-family: inherit; }
   font-size: calc(16 * var(--u)); letter-spacing: 0.12em;
 }
 .guide-cover__media { aspect-ratio: 4 / 5; overflow: hidden; background: var(--placeholder); }
-.guide-cover__media img { width: 100%; height: 100%; object-fit: cover; }
+.guide-cover__media img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.05); }
 
-/* the handwritten-looking place tag with its arc, as on the story frames */
-.guide-tag {
-  position: absolute;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: calc(26 * var(--u));
-  line-height: 1.1;
-  text-align: center;
-}
-.guide-tag svg { display: block; width: calc(130 * var(--u)); height: auto; margin-top: calc(6 * var(--u)); }
-/* the arcs stay put; only the names shift out over their ends */
-.guide-tag__name { display: inline-block; }
-.guide-tag--a .guide-tag__name { transform: translateX(calc(40 * var(--u))); }
-.guide-tag--b .guide-tag__name { transform: translateX(calc(-40 * var(--u))); }
-.guide-tag--a { left: calc(470 * var(--u)); top: calc(90 * var(--u)); }
-.guide-tag--b { left: calc(190 * var(--u)); bottom: calc(70 * var(--u)); }
 
 /* ---- 05 — closing ---- */
 /* the scrim is what makes the copy legible without a panel behind it */
@@ -834,11 +818,7 @@ button { font-family: inherit; }
   .guide-cover__row { margin: 14px 0 8px; gap: 8px; }
   .guide-cover__brand { font-size: 12px; letter-spacing: 0.06em; }
   .guide-cover__place { font-size: 8px; }
-  .guide-tag { position: static; text-align: left; font-size: 15px; }
   /* the arc only reads as a pointer next to a card it can point at */
-  .guide-tag svg { display: none; }
-  .guide-tag--a { grid-column: 1; grid-row: 2; }
-  .guide-tag--b { grid-column: 2; grid-row: 2; }
 
   /* the bleed layer overhangs the section, so this one still clips */
   .about-slide--photo { min-height: 74vh; overflow: hidden; }

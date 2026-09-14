@@ -51,12 +51,10 @@
 
       'about.s1.title': 'ADDRESS',
       'about.s1.lead': 'Проект авторских путешествий. Мы создаём поездки индивидуально, продумывая их под ваш ритм, интересы и ожидания.',
-      'about.s1.note': 'о нас',
 
       'about.s2.title': 'ОТЕЛИ: ОСНОВА\nЛЮБОГО ПУТЕШЕСТВИЯ',
       'about.s2.lead': 'Мы консультируем, подбираем и бронируем для вас те варианты, которые становятся частью общего впечатления от поездки.',
       'about.s2.foot': 'Работаем напрямую с отелями, чтобы вы получали лучшие условия, приоритет по размещению и внимание к деталям.',
-      'about.s2.note': 'отели',
 
       'about.s3.note': 'как мы работаем?',
       'about.s3.lead': 'Вы делитесь направлением, количеством дней и своими ожиданиями, а мы создаём маршрут, который точно совпадает с вашим настроением и запросом.',
@@ -65,9 +63,6 @@
       'about.s4.lead': 'Мы составляем отдельно под каждую поездку и под ваши пожелания. Персональный гайд с редкими местами, неочевидными локациями и полезными подсказками.',
       'about.s4.kicker': 'your personal guide',
       'about.s4.kickerCity': 'your personal city guide',
-      'about.s4.tag.italy': 'Италия',
-      'about.s4.tag.london': 'Лондон',
-      'about.s4.note': 'guides',
 
       'about.s5.title': 'ADDRESS',
       'about.s5.lead': 'Эстетика, редкие места, внимание к деталям и ощущение лёгкости, когда путешествие складывается идеально.',
@@ -208,12 +203,10 @@
 
       'about.s1.title': 'ADDRESS',
       'about.s1.lead': 'A project of authored travel. We build every trip individually, shaping it around your rhythm, your interests and what you expect from it.',
-      'about.s1.note': 'about us',
 
       'about.s2.title': 'HOTELS: THE FOUNDATION\nOF ANY JOURNEY',
       'about.s2.lead': 'We advise, select and book the stays that become part of how the whole trip feels.',
       'about.s2.foot': 'We work with hotels directly, so you get the best conditions, priority on rooms and attention to detail.',
-      'about.s2.note': 'hotels',
 
       'about.s3.note': 'how do we work?',
       'about.s3.lead': 'You share the destination, the number of days and what you are hoping for, and we build an itinerary that matches your mood and your request exactly.',
@@ -222,9 +215,6 @@
       'about.s4.lead': 'We put one together for every trip and every wish. A personal guide with rare places, unexpected locations and useful hints.',
       'about.s4.kicker': 'your personal guide',
       'about.s4.kickerCity': 'your personal city guide',
-      'about.s4.tag.italy': 'Италия',
-      'about.s4.tag.london': 'Лондон',
-      'about.s4.note': 'guides',
 
       'about.s5.title': 'ADDRESS',
       'about.s5.lead': 'Aesthetics, rare places, attention to detail and the feeling of ease when a journey comes together perfectly.',
