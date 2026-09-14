@@ -420,6 +420,14 @@
       return card.getBoundingClientRect().width + gap;
     }
 
+    /* the arrows sit at the middle of the photographs' height, and that
+       height follows the card width the CSS clamp settles on, so it is
+       measured here rather than guessed at in CSS */
+    function gPlaceArrows() {
+      var media = gTrack.querySelector('.gallery__media');
+      if (media) gallery.style.setProperty('--gallery-arrow-y', (media.offsetHeight / 2) + 'px');
+    }
+
     /* the bar takes the same share of the line that the visible part of the
        track takes of its full width, so it reads as the width of the window
        onto the cards, and then travels the remaining share of the line */
@@ -503,8 +511,14 @@
       gTicking = true;
       requestAnimationFrame(function () { gTicking = false; gSync(); });
     }, { passive: true });
-    window.addEventListener('resize', gSync);
+    window.addEventListener('resize', function () { gSync(); gPlaceArrows(); });
     gSync();
+    gPlaceArrows();
+    /* the photographs are lazy-loaded, so the media box has no height yet on
+       the first pass — the arrows are placed again once a frame has loaded */
+    gTrack.querySelectorAll('.gallery__media img').forEach(function (img) {
+      if (!img.complete) img.addEventListener('load', gPlaceArrows, { once: true });
+    });
   }
 
   /* ---------- interest tag picker (Contacts) — up to 2 at once,
