@@ -262,7 +262,6 @@
       if (hit && hit.closest('[data-cursor-plain]')) hit = null;
       if (!hit) {
         cursor.classList.remove('is-hover');
-        cursor.classList.remove('is-send');
         label.textContent = '';
         /* the lens has to go with it: leaving a header link straight onto the
            page never crosses another link, so nothing else would close it */
@@ -278,12 +277,10 @@
       else if (lensTarget) closeLens();
 
       /* the call to action draws the circle inside itself, so the cursor's
-         own disc gets out of the way instead of blending over the yellow */
-      cursor.classList.toggle('is-fill', !!target.closest('.nav-cta'));
-
-      /* над жёлтой кнопкой Send круг курсора синий: разностное смешение
-         над жёлтым дало бы цвет, которого в палитре нет */
-      cursor.classList.toggle('is-send', !!target.closest('.form-submit'));
+         own disc gets out of the way instead of blending over the yellow.
+         Кнопка отправки устроена так же: синий круг она рисует сама,
+         поэтому слово на ней инвертируется, а не закрывается диском */
+      cursor.classList.toggle('is-fill', !!target.closest('.nav-cta, .form-submit'));
     });
   }
 
@@ -309,6 +306,30 @@
       var r = btn.getBoundingClientRect();
       btn.style.setProperty('--cta-x', (e.clientX - r.left) + 'px');
       btn.style.setProperty('--cta-y', (e.clientY - r.top) + 'px');
+    });
+  });
+
+  /* ---------- the submit button: the blue circle rides inside it ----------
+     Same trick as the header call to action, so the word inverts over the
+     circle instead of disappearing under it. The label is wrapped and
+     re-wrapped after a language switch, which rewrites the button's text. */
+  document.querySelectorAll('.form-submit').forEach(function (btn) {
+    function wrapLabel() {
+      if (btn.querySelector('.form-submit__label')) return;
+      var span = document.createElement('span');
+      span.className = 'form-submit__label';
+      span.textContent = btn.textContent;
+      btn.textContent = '';
+      btn.appendChild(span);
+    }
+    wrapLabel();
+    if (window.MutationObserver) {
+      new MutationObserver(wrapLabel).observe(btn, { childList: true });
+    }
+    btn.addEventListener('mousemove', function (e) {
+      var r = btn.getBoundingClientRect();
+      btn.style.setProperty('--send-x', (e.clientX - r.left) + 'px');
+      btn.style.setProperty('--send-y', (e.clientY - r.top) + 'px');
     });
   });
 
