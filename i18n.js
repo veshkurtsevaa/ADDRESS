@@ -31,6 +31,8 @@
       'home.index.03.bonus': 'Особые условия в партнёрских отелях: апгрейд категории номера, приоритет на ранний заезд и поздний выезд, комплименты в номере, кредиты на spa и трансферы, сопровождение до поездки, во время неё и после.',
       'home.index.04.title': 'Консьерж сервис',
       'home.index.04.text': 'Бронируем рестораны, билеты на мероприятия и экскурсии, организуем трансферы. Берём организацию на себя.',
+      'home.index.prev': 'Предыдущая карточка',
+      'home.index.next': 'Следующая карточка',
 
       'home.quote.num': 'философия',
       'home.quote.text': 'Эстетика, скрытые места, внимание к деталям и лёгкость, когда путешествие складывается идеально.',
@@ -183,6 +185,8 @@
       'home.index.03.bonus': 'Special conditions at our partner hotels: an upgraded room category, priority for early arrival and late departure, treats in your room, spa credits and transfers, plus support before, during and after the trip.',
       'home.index.04.title': 'Concierge Service',
       'home.index.04.text': 'We book restaurants, event tickets and tours, and arrange transfers. The organizing is on us.',
+      'home.index.prev': 'Previous card',
+      'home.index.next': 'Next card',
 
       'home.quote.num': 'philosophy',
       'home.quote.text': 'Aesthetics, hidden places, attention to detail, and the feeling of ease when a journey comes together perfectly.',
@@ -330,6 +334,12 @@
     document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
       var key = el.getAttribute('data-i18n-placeholder');
       if (dict[key] !== undefined) el.setAttribute('placeholder', dict[key]);
+    });
+    /* controls that show an icon instead of a word still need a name, and it
+       has to change with the language like any other text */
+    document.querySelectorAll('[data-i18n-aria]').forEach(function (el) {
+      var key = el.getAttribute('data-i18n-aria');
+      if (dict[key] !== undefined) el.setAttribute('aria-label', dict[key]);
     });
     document.querySelectorAll('[data-lang-toggle]').forEach(function (btn) {
       var cur = btn.querySelector('.lang-toggle__current');
