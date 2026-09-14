@@ -473,15 +473,22 @@ button { font-family: inherit; }
    mouse drag, the arrows and the progress bar.
    ========================================================= */
 .gallery {
+  /* the gap the track keeps from the left edge of the page: the section's
+     own gutter is cancelled below, and this is what is left in its place */
+  --gallery-inset: 1cm;
   position: relative;
   /* the track runs the full width of the window: the section's own 24px
-     gutter is cancelled here, so the first card starts at the very edge
-     of the page and the last one is cut by the opposite edge */
+     gutter is cancelled here, so the last card is cut by the right edge
+     of the page */
   margin-left: -24px; margin-right: -24px;
 }
 .gallery__track {
   list-style: none;
   display: flex; gap: 32px;
+  /* the first card starts a centimetre in from the edge of the page, and a
+     matching scroll padding keeps every snapped card on the same line */
+  padding-left: var(--gallery-inset);
+  scroll-padding-left: var(--gallery-inset);
   overflow-x: auto; overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
   cursor: grab;
@@ -535,7 +542,9 @@ button { font-family: inherit; }
   position: absolute; left: 0; right: 0;
   top: var(--gallery-arrow-y, 30%); transform: translateY(-50%);
   display: flex; justify-content: space-between;
-  padding: 0 20px; z-index: 2;
+  /* the left arrow keeps its place on the photograph, so it moves in with
+     the track rather than staying at the edge of the page */
+  padding: 0 20px 0 calc(var(--gallery-inset) + 20px); z-index: 2;
   pointer-events: none;
 }
 /* glass rather than a solid disc: the arrows lie on the photographs, so they
@@ -577,7 +586,7 @@ button { font-family: inherit; }
   .gallery__track { gap: 20px; }
   .gallery__card { flex-basis: 78vw; }
   .gallery__controls { margin-top: 32px; }
-  .gallery__arrows { padding: 0 12px; }
+  .gallery__arrows { padding: 0 12px 0 calc(var(--gallery-inset) + 12px); }
   .gallery__arrow { width: 44px; height: 44px; }
 }
 
