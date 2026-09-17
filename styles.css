@@ -190,7 +190,7 @@ button { font-family: inherit; }
   display: inline-flex; color: var(--ink); opacity: 0.55;
   transition: color 0.2s ease, opacity 0.2s ease;
 }
-.social-link svg { display: block; width: 18px; height: 18px; }
+.social-link svg { display: block; width: 22px; height: 22px; }
 .social-link:hover { color: var(--yellow); opacity: 1; }
 .site-header.is-over-dark .social-link { color: #FFFFFF; opacity: 0.78; }
 .site-header.is-over-dark .social-link:hover { color: var(--yellow); opacity: 1; }
@@ -835,7 +835,7 @@ button { font-family: inherit; }
 }
 .about-s5__text .about-text { margin: 0 auto; }
 .about-s5__text .about-text + .about-text { margin-top: calc(18 * var(--u)); }
-.about-s5__text .about-text--lead { font-size: calc(34 * var(--u)); }
+.about-s5__text .about-text--lead { font-size: calc(27 * var(--u)); }
 /* on Service the closing is two sentences of equal weight, so the first
    does not step up over the second */
 #service-closing .about-s5__text .about-text--lead { font-size: calc(27 * var(--u)); }
