@@ -454,9 +454,16 @@ button { font-family: inherit; }
 @media (prefers-reduced-motion: reduce) { .hero__scroll-arrow { animation: none; } }
 
 /* ---------- marquee ---------- */
-.marquee { background: var(--ink); color: var(--paper); overflow: hidden; white-space: nowrap; padding: 20px 0; }
-.marquee__track { display: inline-flex; gap: 48px; animation: marquee-scroll 28s linear infinite; }
-.marquee__item { font-family: var(--font-ui); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.85; padding-right: 48px; }
+.marquee { background: rgba(28, 27, 24, 0.72); color: var(--paper); overflow: hidden; white-space: nowrap; padding: 22px 0; }
+.marquee__track { display: inline-flex; animation: marquee-scroll 40s linear infinite; }
+.marquee__group { display: flex; align-items: center; gap: 72px; padding-right: 72px; flex-shrink: 0; }
+/* the partner files come in mixed colours, so every logo is flattened to
+   white; --h evens out their visual weight, wide wordmarks sit lower */
+.marquee__logo { display: block; height: calc(var(--h, 1) * 24px); width: auto; filter: brightness(0) invert(1); opacity: 0.85; }
+@media (max-width: 768px) {
+  .marquee__group { gap: 48px; padding-right: 48px; }
+  .marquee__logo { height: calc(var(--h, 1) * 18px); }
+}
 @keyframes marquee-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .marquee__track { animation: none; } }
 

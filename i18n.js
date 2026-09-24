@@ -19,7 +19,6 @@
       'home.hero.cta': 'Связаться',
       'home.hero.cta2': 'Смотреть индекс',
 
-      'home.marquee.text': 'КУРАТОРСКИЕ ПУТЕШЕСТВИЯ · ОТЕЛИ · ГИДЫ · ИНДИВИДУАЛЬНЫЕ МАРШРУТЫ',
 
       'home.index.label': 'указатель',
       'home.index.01.title': 'Address Personal',
@@ -186,7 +185,6 @@
       'home.hero.cta': 'Get in Touch',
       'home.hero.cta2': 'View Index',
 
-      'home.marquee.text': 'CURATED TRAVEL · HOTELS · GUIDES · TAILORED ITINERARIES',
 
       'home.index.label': 'index',
       'home.index.01.title': 'Address Personal',
