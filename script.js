@@ -1,4 +1,4 @@
-// script.js — menu, custom cursor, magnetic buttons, contact form, page transition
+// script.js — menu, magnetic buttons, contact form, page transition
 (function () {
   'use strict';
 
@@ -185,103 +185,6 @@
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', syncHeaderTone);
     syncHeaderTone();
-  }
-
-  /* ---------- custom cursor ---------- */
-  if (!reduceMotion && window.matchMedia('(hover: hover)').matches) {
-    var cursor = document.createElement('div');
-    cursor.className = 'cursor';
-    cursor.innerHTML = '<span class="cursor__label"></span>' +
-                       '<span class="cursor__lens"><span></span></span>';
-    document.body.appendChild(cursor);
-    var label = cursor.querySelector('.cursor__label');
-    var lens = cursor.querySelector('.cursor__lens');
-    var lensText = lens.firstChild;
-    var lensTarget = null, lensScale = 1.9;
-
-    var mouseX = 0, mouseY = 0, curX = 0, curY = 0, active = false;
-    document.addEventListener('mousemove', function (e) {
-      mouseX = e.clientX; mouseY = e.clientY;
-      if (!active) { active = true; cursor.classList.add('is-active'); }
-    });
-    document.addEventListener('mouseleave', function () {
-      active = false; cursor.classList.remove('is-active');
-      closeLens();
-    });
-
-    /* The lens holds a magnified copy of the word it is passing over. The
-       copy is placed so that the point of the text under the middle of the
-       circle sits at the middle of the circle, which is what makes it read
-       as a lens rather than as a floating label. The circle eases toward
-       the pointer, so the sum is taken from the circle's own position, not
-       from the pointer's. */
-    function placeLens() {
-      if (!lensTarget) return;
-      var r = lensTarget.getBoundingClientRect();
-      var d = cursor.offsetWidth / 2;
-      lensText.style.left = (d - (curX - r.left) * lensScale) + 'px';
-      lensText.style.top = (d - (curY - r.top) * lensScale) + 'px';
-    }
-
-    function openLens(el) {
-      var cs = window.getComputedStyle(el);
-      lensTarget = el;
-      lensText.textContent = el.textContent;
-      lensText.style.font = cs.font;
-      lensText.style.letterSpacing = cs.letterSpacing;
-      lensText.style.textTransform = cs.textTransform;
-      lensText.style.transform = 'scale(' + lensScale + ')';
-      cursor.classList.add('is-lens');
-      placeLens();
-    }
-
-    function closeLens() {
-      lensTarget = null;
-      cursor.classList.remove('is-lens');
-      lensText.textContent = '';
-    }
-
-    function raf() {
-      curX += (mouseX - curX) * 0.18;
-      curY += (mouseY - curY) * 0.18;
-      cursor.style.transform = 'translate(' + curX + 'px, ' + curY + 'px) translate(-50%, -50%)';
-      placeLens();
-      requestAnimationFrame(raf);
-    }
-    raf();
-
-    /* One delegated handler rather than a pair per element: moving from a row
-       onto a link inside it used to fire the row's mouseleave and blank the
-       label, so the word flickered away while the pointer was still on the
-       row. Reading the target's nearest labelled ancestor keeps it up. */
-    document.addEventListener('mouseover', function (e) {
-      var target = e.target.closest ? e.target : e.target.parentElement;
-      var hit = target && target.closest('a, button, [data-cursor]');
-      /* inside a plain zone the cursor keeps its small dot: no circle grows
-         under the pointer and no word rides on it */
-      if (hit && hit.closest('[data-cursor-plain]')) hit = null;
-      if (!hit) {
-        cursor.classList.remove('is-hover');
-        label.textContent = '';
-        /* the lens has to go with it: leaving a header link straight onto the
-           page never crosses another link, so nothing else would close it */
-        closeLens();
-        return;
-      }
-      var labelled = target.closest('[data-cursor-label]');
-      cursor.classList.add('is-hover');
-      label.textContent = labelled ? labelled.getAttribute('data-cursor-label') : '';
-
-      var magnify = target.closest('[data-lens]');
-      if (magnify) { if (magnify !== lensTarget) openLens(magnify); }
-      else if (lensTarget) closeLens();
-
-      /* the call to action draws the circle inside itself, so the cursor's
-         own disc gets out of the way instead of blending over the yellow.
-         Кнопка отправки устроена так же: синий круг она рисует сама,
-         поэтому слово на ней инвертируется, а не закрывается диском */
-      cursor.classList.toggle('is-fill', !!target.closest('.nav-cta, .form-submit'));
-    });
   }
 
   /* ---------- the header call to action: yellow inside the circle only ----------
