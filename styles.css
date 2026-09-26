@@ -121,9 +121,9 @@ button { font-family: inherit; }
    on is shorter there, or the words go out on the glass */
 .site-header.is-over-dark .nav__link { color: #FFFFFF; opacity: 0.78; }
 .site-header.is-over-dark .nav__link--active { opacity: 1; }
-/* the word swells under the pointer, the way it would under a lens */
+/* the word swells a little under the pointer and takes the site's blue */
 .nav__link:hover,
-.site-header.is-over-dark .nav__link:hover { color: var(--yellow); opacity: 1; }
+.site-header.is-over-dark .nav__link:hover { color: var(--navy); opacity: 1; transform: scale(1.08); }
 .mobile-nav__link:hover { color: var(--yellow); }
 
 .lang-toggle {
@@ -132,7 +132,11 @@ button { font-family: inherit; }
   text-transform: uppercase; background: none; border: none;
   margin-left: 18px; color: var(--ink);
   cursor: pointer;
+  transition: color 0.2s ease, transform 0.28s var(--ease);
 }
+/* переключатель языка отвечает на наведение так же, как пункты меню */
+.lang-toggle:hover,
+.site-header.is-over-dark .lang-toggle:hover { color: var(--navy); transform: scale(1.08); }
 .lang-toggle__inner { position: relative; display: inline-block; min-width: 24px; height: 1em; }
 .lang-toggle__current, .lang-toggle__target { position: absolute; top: 0; left: 0; transition: opacity 0.15s ease; }
 .lang-toggle__target { opacity: 0; }
