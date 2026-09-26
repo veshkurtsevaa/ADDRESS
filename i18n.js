@@ -59,7 +59,7 @@
       'home.pillars.trust.text': 'Конфиденциальность и внимание к деталям на каждом этапе.',
 
       'home.cta.title': 'Готовы спланировать путешествие?',
-      'home.cta.text': 'Напишите нам в Telegram или оставьте заявку, мы свяжемся с вами в течение дня.',
+      'home.cta.text': 'Напишите нам в Telegram или оставьте заявку,\nмы свяжемся с вами в течение дня.',
       'home.cta.telegram': 'Написать в Telegram',
       'home.cta.form': 'Оставить заявку',
 
@@ -225,7 +225,7 @@
       'home.pillars.trust.text': 'Confidentiality and attention to detail at every step.',
 
       'home.cta.title': 'Ready to plan your journey?',
-      'home.cta.text': "Message us on Telegram or leave a request and we'll get back to you within a day.",
+      'home.cta.text': "Message us on Telegram or leave a request,\nand we'll get back to you within a day.",
       'home.cta.telegram': 'Message on Telegram',
       'home.cta.form': 'Leave a Request',
 

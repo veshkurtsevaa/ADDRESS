@@ -438,12 +438,13 @@ button { font-family: inherit; }
 @media (prefers-reduced-motion: reduce) { .hero__scroll-arrow { animation: none; } }
 
 /* ---------- marquee ---------- */
-.marquee { background: rgba(28, 27, 24, 0.72); color: var(--paper); overflow: hidden; white-space: nowrap; padding: 22px 0; }
+/* узкая полупрозрачная лента: читается как подпись к видео, а не как отдельный блок */
+.marquee { background: rgba(28, 27, 24, 0.45); color: var(--paper); overflow: hidden; white-space: nowrap; padding: 13px 0; }
 .marquee__track { display: inline-flex; animation: marquee-scroll 40s linear infinite; }
 .marquee__group { display: flex; align-items: center; gap: 72px; padding-right: 72px; flex-shrink: 0; }
 /* the partner files come in mixed colours, so every logo is flattened to
    white; --h evens out their visual weight, wide wordmarks sit lower */
-.marquee__logo { display: block; height: calc(var(--h, 1) * 24px); width: auto; filter: brightness(0) invert(1); opacity: 0.85; }
+.marquee__logo { display: block; height: calc(var(--h, 1) * 21px); width: auto; filter: brightness(0) invert(1); opacity: 0.8; }
 @media (max-width: 768px) {
   .marquee__group { gap: 48px; padding-right: 48px; }
   .marquee__logo { height: calc(var(--h, 1) * 18px); }
@@ -467,6 +468,8 @@ button { font-family: inherit; }
 .section__title { font-size: clamp(34px, 5vw, 58px); text-align: center; margin-bottom: 24px; }
 .section__text {
   text-wrap: pretty; font-size: 20px; text-align: center; max-width: var(--content); margin: 0 auto 48px; }
+/* строки разбиты в самом тексте (\n в i18n.js), здесь им дают место */
+.section__text--lines { white-space: pre-line; max-width: none; }
 
 /* =========================================================
    HOME — gallery of service cards, scrolled sideways
@@ -527,6 +530,33 @@ button { font-family: inherit; }
 }
 .gallery__text { font-size: 17px; opacity: 0.85; margin-bottom: 16px; }
 .gallery__link { display: inline-block; }
+
+/* карточки указателя: после первой строки описание уходит в белый, и
+   «Подробнее» у всех карточек стоит на одной линии, внизу карточки */
+#index .gallery__card { display: flex; flex-direction: column; }
+#index .gallery__body { flex: 1; display: flex; flex-direction: column; align-items: flex-start; }
+#index .gallery__text {
+  line-height: 1.5; height: 3em; overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 1.3em, transparent 2.6em);
+  mask-image: linear-gradient(to bottom, #000 1.3em, transparent 2.6em);
+}
+#index .gallery__text + .gallery__text { display: none; }
+#index .gallery__link { margin-top: auto; }
+
+/* ---------- index pinned: the page scroll drives the cards sideways ----------
+   script.js adds .is-pinned on a wide screen and sets --pin-distance, the
+   width the track has left to travel. The section is that much taller than
+   the window, and its content stays stuck to the screen while it passes. */
+.is-pinned#index { padding-top: 0; padding-bottom: 0; height: calc(100vh + var(--pin-distance, 0px)); }
+.is-pinned .index-pin {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding-top: 90px;
+}
+/* the cards are sized by the height of the window too, so a whole card
+   always fits on the pinned screen */
+.is-pinned .gallery__card { flex-basis: min(33vw, 480px, calc((100vh - 400px) * 0.75)); }
+.is-pinned .gallery__track { scroll-snap-type: none; overflow-x: hidden; padding-right: var(--gallery-inset); }
 
 /* ---------- a case card: several frames in one card ----------
    The review cases carry their own photographs instead of a page each, so
@@ -624,7 +654,11 @@ button { font-family: inherit; }
 .quote__text { font-family: var(--font-display); font-size: clamp(26px, 3.6vw, 44px); max-width: 900px; margin: 0 auto; line-height: 1.4; }
 
 /* pillars */
-.pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+.pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 72px; }
+/* преимущества идут почти от края до края, на одной линии с галереей */
+.section--pillars { padding-left: 1cm; padding-right: 1cm; }
+.section--pillars .section__inner { max-width: none; }
+@media (max-width: 1000px) { .pillars { gap: 40px 32px; } }
 .pillar { text-align: left; border-top: 1px solid var(--line); padding-top: 20px; }
 .pillar__num { font-family: var(--font-num); font-size: 12px; opacity: 0.55; display: block; margin-bottom: 14px; }
 .pillar__title { font-family: var(--font-display); font-size: 21px; margin-bottom: 8px; }
