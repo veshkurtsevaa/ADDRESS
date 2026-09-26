@@ -343,6 +343,38 @@
     var gNext = gallery.querySelector('[data-gallery-next]');
     var gReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    /* On a wide screen the index section is pinned (see .is-pinned in
+       styles.css): it is as much taller than the window as the track has
+       left to travel times GPIN_RATE, and every GPIN_RATE pixels scrolled
+       down while it is held move the cards one pixel to the left: the track
+       has only a few hundred pixels to go, and one to one it would be gone
+       in a flick of the wheel. The arrows, the keyboard and a mouse
+       drag then move the page, so the two scrolls never disagree. */
+    var gSection = gallery.closest('[data-index-section]');
+    var gWide = window.matchMedia('(min-width: 861px)');
+    var gPinned = false;
+    var GPIN_RATE = 2.5;
+    function gMax() { return Math.max(0, gTrack.scrollWidth - gTrack.clientWidth); }
+    function gPinTop() { return gSection.getBoundingClientRect().top + window.scrollY; }
+    function gPinScroll() {
+      if (!gPinned) return;
+      gTrack.scrollLeft = Math.min(gMax(), Math.max(0, (window.scrollY - gPinTop()) / GPIN_RATE));
+    }
+    function gPinLayout() {
+      if (!gSection) return;
+      gPinned = gWide.matches && !gReduce;
+      gSection.classList.toggle('is-pinned', gPinned);
+      if (gPinned) gSection.style.setProperty('--pin-distance', (gMax() * GPIN_RATE) + 'px');
+      else gSection.style.removeProperty('--pin-distance');
+      gPinScroll();
+    }
+    /* the pinned counterpart of setting scrollLeft: scroll the page to the
+       point where the track stands at that offset */
+    function gPinGo(left, smooth) {
+      left = Math.min(gMax(), Math.max(0, left));
+      window.scrollTo({ top: gPinTop() + left * GPIN_RATE, behavior: smooth ? 'smooth' : 'instant' });
+    }
+
     /* one card plus the gap between cards: the distance an arrow moves */
     function gStep() {
       var card = gTrack.querySelector('.gallery__card');
@@ -377,6 +409,7 @@
     }
 
     function gScrollBy(dir) {
+      if (gPinned) { gPinGo(gTrack.scrollLeft + dir * gStep(), !gReduce); return; }
       gTrack.scrollBy({ left: dir * gStep(), behavior: gReduce ? 'auto' : 'smooth' });
     }
     if (gPrev) gPrev.addEventListener('click', function () { gScrollBy(-1); });
@@ -412,7 +445,8 @@
         gallery.classList.add('is-dragging');
         gTrack.setPointerCapture(e.pointerId);
       }
-      gTrack.scrollLeft = gStartLeft - dx;
+      if (gPinned) gPinGo(gStartLeft - dx, false);
+      else gTrack.scrollLeft = gStartLeft - dx;
     });
 
     function gEndDrag(e) {
@@ -442,7 +476,17 @@
       gTicking = true;
       requestAnimationFrame(function () { gTicking = false; gSync(); });
     }, { passive: true });
-    window.addEventListener('resize', function () { gSync(); gPlaceArrows(); });
+    window.addEventListener('resize', function () { gPinLayout(); gSync(); gPlaceArrows(); });
+    if (gSection) {
+      var gPinTicking = false;
+      window.addEventListener('scroll', function () {
+        if (gPinTicking) return;
+        gPinTicking = true;
+        requestAnimationFrame(function () { gPinTicking = false; gPinScroll(); });
+      }, { passive: true });
+      if (gWide.addEventListener) gWide.addEventListener('change', gPinLayout);
+    }
+    gPinLayout();
     gSync();
     gPlaceArrows();
     /* the photographs are lazy-loaded, so the media box has no height yet on
