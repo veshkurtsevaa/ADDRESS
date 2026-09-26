@@ -78,51 +78,6 @@ button { font-family: inherit; }
 
 .container { max-width: var(--container); margin: 0 auto; padding: 0 32px; }
 
-/* ---------- custom cursor (magnetic + label) ---------- */
-.cursor {
-  --cursor-d: 80px;
-  position: fixed; top: 0; left: 0; width: 14px; height: 14px;
-  border-radius: 50%; background: var(--ink); pointer-events: none;
-  z-index: 9999; transform: translate(-50%, -50%);
-  transition: width 0.25s var(--ease), height 0.25s var(--ease),
-              background-color 0.25s var(--ease), opacity 0.25s ease;
-  mix-blend-mode: difference; opacity: 0;
-}
-.cursor.is-active { opacity: 1; }
-/* over the call to action the button carries the circle itself, so the
-   cursor's own disc steps out of the way rather than blending with it */
-.cursor.is-fill { opacity: 0; }
-/* one diameter for every state the circle takes, so moving along the header
-   from a link to the button to the language switch does not resize it */
-.cursor.is-hover {
-  width: var(--cursor-d); height: var(--cursor-d); background: var(--paper);
-  display: flex; align-items: center; justify-content: center;
-}
-.cursor__label {
-  font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--ink); mix-blend-mode: normal;
-  opacity: 0; transition: opacity 0.2s ease;
-}
-.cursor.is-hover .cursor__label { opacity: 1; }
-
-/* the lens: the circle turns into a glass holding a magnified copy of the
-   word underneath it, so the header needs no underline to answer a hover */
-.cursor__lens { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; opacity: 0; }
-/* ink rather than the hover yellow: the word is read through the lens, and
-   pale yellow on a pale header is not readable at any size */
-.cursor__lens > span { position: absolute; white-space: nowrap; transform-origin: 0 0; color: var(--ink); }
-.cursor.is-lens {
-  width: var(--cursor-d); height: var(--cursor-d);
-  background: var(--paper);
-  mix-blend-mode: normal;
-  border: 1px solid var(--line);
-  box-shadow: 0 12px 30px rgba(28, 27, 24, 0.16);
-}
-.cursor.is-lens .cursor__lens { opacity: 1; }
-.cursor.is-lens .cursor__label { display: none; }
-@media (hover: none), (max-width: 860px) { .cursor { display: none; } }
-@media (prefers-reduced-motion: reduce) { .cursor { transition: none; } }
-
 /* ---------- header ---------- */
 .site-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
@@ -193,6 +148,8 @@ button { font-family: inherit; }
 .social-link svg { display: block; width: 22px; height: 22px; }
 .social-link:hover { color: var(--yellow); opacity: 1; }
 .site-header.is-over-dark .social-link { color: #FFFFFF; opacity: 0.78; }
+/* переключатель языка тоже белеет над тёмным блоком, как ссылки меню */
+.site-header.is-over-dark .lang-toggle { color: #FFFFFF; }
 .site-header.is-over-dark .social-link:hover { color: var(--yellow); opacity: 1; }
 
 .btn {
@@ -944,8 +901,8 @@ button { font-family: inherit; }
 
 .svc__text .about-title { font-size: calc(44 * var(--u)); margin-bottom: calc(22 * var(--u)); }
 .svc__text .about-text { font-size: calc(22 * var(--u)); max-width: calc(700 * var(--u)); }
-/* описание под услугой набрано мельче основного абзаца */
-.svc__text .svc__deliverable { font-size: calc(19 * var(--u)); margin-top: calc(16 * var(--u)); opacity: 0.82; }
+/* описание под услугой набрано тем же кеглем, что и основной абзац */
+.svc__text .svc__deliverable { margin-top: calc(16 * var(--u)); opacity: 1; }
 
 
 .svc-list { list-style: none; margin: calc(26 * var(--u)) 0 0; display: grid; gap: calc(14 * var(--u)); }
@@ -972,7 +929,11 @@ button { font-family: inherit; }
   border: 1px solid currentColor;
   border-radius: 999px;
   white-space: nowrap;
+  color: inherit;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
+/* цена ведёт к форме внизу страницы: при наведении овал заливается */
+a.svc-price__value:hover { background: var(--yellow); border-color: var(--yellow); color: var(--ink); transform: translateY(-1px); }
 .svc-price__note { font-size: calc(16 * var(--u)); opacity: 0.7; }
 
 /* every service photograph carries its own white border, so the frame keeps
