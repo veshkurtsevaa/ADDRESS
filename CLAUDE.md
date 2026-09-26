@@ -80,43 +80,45 @@
 
 ## Деплой
 
-Рабочий адрес сайта: https://addressguides.com (и https://www.addressguides.com).
-Технический адрес того же проекта: https://address-site.pages.dev
-Это Cloudflare Pages, проект `address-site`, с ручной загрузкой файлов.
+Рабочий адрес сайта: https://addressguides.com
+(`www.addressguides.com` перенаправляется туда же).
+
+Сайт собирается сам: Cloudflare Workers Builds, проект `adress`, привязан
+к `veshkurtsevaa/ADDRESS`, ветка `main`. Через минуту после мержа в `main`
+правка на сайте, ничего загружать не нужно. Настройки Worker в
+`wrangler.toml`, лишнее из выкладки отсекает `.assetsignore`. Сборки видно
+в `adress` → Deployments → Recent builds. Технический адрес того же Worker:
+https://adress.wh0isd.workers.dev/
 
 Домен `addressguides.com` зарегистрирован на reg.ru (там его продлевают),
 а DNS обслуживает Cloudflare: на reg.ru прописаны NS серверы Cloudflare,
-зона `addressguides.com` в том же аккаунте. Оба адреса подключены в
-`address-site` → Custom domains, записи `CNAME` для `@` и `www` на
-`address-site.pages.dev`. Остальные записи зоны (`mail`, `ftp`, `pop`,
-`smtp`, `MX` на `hosting.reg.ru`, SPF в `TXT`) перенесены с reg.ru как
-были; прокси на них не включать, это ломает почту.
-Главный адрес без www: Redirect Rule «Redirect from WWW to root» (301,
-`https://www.*` → `https://${1}`) переводит www на `addressguides.com`,
-а SSL/TLS → Edge Certificates → **Always Use HTTPS** включён. Сертификат
-Universal от Let's Encrypt, Cloudflare продлевает его сам.
-Автоматической сборки у него нет, поэтому после мержа в `main` сайт сам
-не обновляется: надо собрать папку с сайтом (четыре HTML, `styles.css`,
-`script.js`, `i18n.js`, `animations.js`, папка `assets` без `_src`),
-отдать её владелице архивом и она загружает его в проект, вкладка
+зона `addressguides.com` в том же аккаунте. `addressguides.com` и
+`www.addressguides.com` подключены в `adress` → Domains → Custom domains.
+Остальные записи зоны (`mail`, `ftp`, `pop`, `smtp`, `MX` на
+`hosting.reg.ru`, SPF в `TXT`) перенесены с reg.ru как были; прокси на них
+не включать, это ломает почту.
+Redirect Rule «Redirect from WWW to root» (301, `https://www.*` →
+`https://${1}`) переводит www на `addressguides.com`, а SSL/TLS → Edge
+Certificates → **Always Use HTTPS** включён. Сертификат Universal от
+Let's Encrypt, Cloudflare продлевает его сам. Эти настройки живут в зоне,
+а не в проекте, переезд домена между проектами их не трогает.
+
+Запасной вариант на случай, если GitHub снова станет недоступен:
+Cloudflare Pages, проект `address-site`, https://address-site.pages.dev ,
+с ручной загрузкой файлов. Собрать папку (четыре HTML, `styles.css`,
+`script.js`, `i18n.js`, `animations.js`, `favicon.ico`, папка `assets`
+без `_src`), отдать владелице архивом, она загружает его в проект:
 **Create deployment** → перетащить папку или zip → **Deploy site**.
+Затем убрать домены из `adress` → Domains и добавить их в
+`address-site` → Custom domains.
 
-Две прежние площадки не работают с 16 сентября 2026, обе по одной причине:
-аккаунт GitHub помечен антиспамом, из-за этого репозиторий не виден ни
-незалогиненным посетителям, ни сторонним приложениям.
-
-* Cloudflare Workers Builds, проект `adress`, адрес
-  https://adress.wh0isd.workers.dev/ . Сборки падают с ошибкой
-  «The project is linked to a repository that no longer exists».
-  Последняя удачная сборка от 14 сентября, там старая версия сайта.
-* GitHub Pages, https://veshkurtsevaa.github.io/ADDRESS/ , отдаёт 404.
-  Настройки Pages в порядке (ветка `main`, папка root), чинить их не нужно.
-
-Обращение в поддержку GitHub отправлено 16 сентября, ответа пока нет.
-Когда пометку снимут: Pages поднимется сам, а в проекте `adress` надо нажать
-**Retry build** или смержить любую правку, и при необходимости переподключить
-репозиторий в Settings → Build → Git repository. После этого ручная загрузка
-в `address-site` больше не понадобится.
+История: с 16 по 26 сентября 2026 аккаунт GitHub был помечен антиспамом,
+репозиторий не был виден сторонним приложениям, и сборки `adress` падали
+с ошибкой «The project is linked to a repository that no longer exists».
+В это время сайт жил в `address-site`. 26 сентября репозиторий заново
+подключили в `adress` → Settings → Build, сборки пошли, и домен перенесли
+в `adress`. GitHub Pages (https://veshkurtsevaa.github.io/ADDRESS/) после
+этого не проверяли, рабочим адресом он больше не считается.
 
 Владелец сайта разрешила мержить самостоятельно: коммит, пуш, пул-реквест
 в `main` и сразу мерж, без вопроса «мержить?». Обсуждать нужно сами правки,
