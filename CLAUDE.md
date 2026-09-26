@@ -80,8 +80,17 @@
 
 ## Деплой
 
-Рабочий адрес сайта: https://address-site.pages.dev
+Рабочий адрес сайта: https://addressguides.com (и https://www.addressguides.com).
+Технический адрес того же проекта: https://address-site.pages.dev
 Это Cloudflare Pages, проект `address-site`, с ручной загрузкой файлов.
+
+Домен `addressguides.com` зарегистрирован на reg.ru (там его продлевают),
+а DNS обслуживает Cloudflare: на reg.ru прописаны NS серверы Cloudflare,
+зона `addressguides.com` в том же аккаунте. Оба адреса подключены в
+`address-site` → Custom domains, записи `CNAME` для `@` и `www` на
+`address-site.pages.dev`. Остальные записи зоны (`mail`, `ftp`, `pop`,
+`smtp`, `MX` на `hosting.reg.ru`, SPF в `TXT`) перенесены с reg.ru как
+были; прокси на них не включать, это ломает почту.
 Автоматической сборки у него нет, поэтому после мержа в `main` сайт сам
 не обновляется: надо собрать папку с сайтом (четыре HTML, `styles.css`,
 `script.js`, `i18n.js`, `animations.js`, папка `assets` без `_src`),
