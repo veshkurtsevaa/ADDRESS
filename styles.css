@@ -123,20 +123,23 @@ button { font-family: inherit; }
 .site-header.is-over-dark .nav__link--active { opacity: 1; }
 /* the word swells a little under the pointer, comes up to full strength and
    draws a thin line of its own colour beneath it, so it reads on the pale
-   glass and over a dark block alike */
+   glass and over a dark block alike. The line stops at the last letter:
+   the right edge gives back the letter spacing trailing after it */
 .nav__link { position: relative; }
 .nav__link::after,
-.lang-toggle__inner::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+.lang-toggle__current::after,
+.lang-toggle__target::after {
+  content: ""; position: absolute; left: 0; right: 0.09em; bottom: 0; height: 1px;
   background: currentColor;
   transform: scaleX(0); transform-origin: left center;
   transition: transform 0.28s var(--ease);
 }
-.lang-toggle__inner::after { bottom: -4px; }
+.lang-toggle__current::after,
+.lang-toggle__target::after { right: 0.06em; bottom: -4px; }
 .nav__link:hover,
 .site-header.is-over-dark .nav__link:hover { opacity: 1; transform: scale(1.08); }
 .nav__link:hover::after,
-.lang-toggle:hover .lang-toggle__inner::after { transform: scaleX(1); }
+.lang-toggle:hover .lang-toggle__target::after { transform: scaleX(1); }
 .mobile-nav__link:hover { color: var(--yellow); }
 
 .lang-toggle {
@@ -155,18 +158,19 @@ button { font-family: inherit; }
 .lang-toggle:hover .lang-toggle__current { opacity: 0; }
 .lang-toggle:hover .lang-toggle__target { opacity: 1; }
 
-/* соцсети в шапке: только иконки, цвет наследуется от шапки */
+/* соцсети в шапке: только иконки, цвет наследуется от шапки; при наведении
+   иконка чуть растёт и выходит на полную яркость, цвет не меняется */
 .social-links { display: inline-flex; align-items: center; gap: 14px; }
 .social-link {
   display: inline-flex; color: var(--ink); opacity: 0.55;
-  transition: color 0.2s ease, opacity 0.2s ease;
+  transition: color 0.2s ease, opacity 0.2s ease, transform 0.28s var(--ease);
 }
 .social-link svg { display: block; width: 22px; height: 22px; }
-.social-link:hover { color: var(--yellow); opacity: 1; }
+.social-link:hover { opacity: 1; transform: scale(1.12); }
 .site-header.is-over-dark .social-link { color: #FFFFFF; opacity: 0.78; }
 /* переключатель языка тоже белеет над тёмным блоком, как ссылки меню */
 .site-header.is-over-dark .lang-toggle { color: #FFFFFF; }
-.site-header.is-over-dark .social-link:hover { color: var(--yellow); opacity: 1; }
+.site-header.is-over-dark .social-link:hover { opacity: 1; }
 
 .btn {
   display: inline-block; padding: 14px 30px; font-size: 12px;
