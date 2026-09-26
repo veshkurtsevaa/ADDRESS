@@ -171,9 +171,13 @@ button { font-family: inherit; }
    inside a circle the size of the cursor, which follows it across the button */
 .site-header .btn--primary:hover,
 .mobile-nav .btn--primary:hover { background: var(--navy); }
-.nav-cta { position: relative; overflow: hidden; }
+.nav-cta { position: relative; overflow: hidden; isolation: isolate; }
+/* the disc carries the pill's own rounding: the button is moved by the
+   magnet, and Safari stops clipping a transformed element's children to
+   its radius, which let the yellow show square corners at the ends */
 .nav-cta::before {
   content: ""; position: absolute; inset: 0; background: var(--yellow);
+  border-radius: inherit;
   clip-path: circle(40px at var(--cta-x, 50%) var(--cta-y, 50%));
   opacity: 0; transition: opacity 0.22s ease; pointer-events: none;
 }
