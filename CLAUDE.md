@@ -91,6 +91,10 @@
 `address-site.pages.dev`. Остальные записи зоны (`mail`, `ftp`, `pop`,
 `smtp`, `MX` на `hosting.reg.ru`, SPF в `TXT`) перенесены с reg.ru как
 были; прокси на них не включать, это ломает почту.
+Главный адрес без www: Redirect Rule «Redirect from WWW to root» (301,
+`https://www.*` → `https://${1}`) переводит www на `addressguides.com`,
+а SSL/TLS → Edge Certificates → **Always Use HTTPS** включён. Сертификат
+Universal от Let's Encrypt, Cloudflare продлевает его сам.
 Автоматической сборки у него нет, поэтому после мержа в `main` сайт сам
 не обновляется: надо собрать папку с сайтом (четыре HTML, `styles.css`,
 `script.js`, `i18n.js`, `animations.js`, папка `assets` без `_src`),
