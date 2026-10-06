@@ -35,6 +35,8 @@
 
       'home.reviews.label': 'отзывы',
       'home.reviews.photo': 'Фото',
+      'home.reviews.prevPhoto': 'Предыдущее фото',
+      'home.reviews.nextPhoto': 'Следующее фото',
       'home.reviews.prev': 'Предыдущий отзыв',
       'home.reviews.next': 'Следующий отзыв',
       'home.reviews.01.name': 'Швейцария',
@@ -199,6 +201,8 @@
 
       'home.reviews.label': 'reviews',
       'home.reviews.photo': 'Photo',
+      'home.reviews.prevPhoto': 'Previous photo',
+      'home.reviews.nextPhoto': 'Next photo',
       'home.reviews.prev': 'Previous review',
       'home.reviews.next': 'Next review',
       'home.reviews.01.name': 'Switzerland',
