@@ -573,14 +573,39 @@ button { font-family: inherit; }
 .shots__track::-webkit-scrollbar { display: none; }
 .shots__item { flex: 0 0 100%; scroll-snap-align: start; }
 .gallery__card--shots .gallery__media { margin-bottom: 14px; }
-.shots__dots { display: flex; gap: 8px; margin-bottom: 20px; min-height: 7px; }
+.shots__dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 20px; min-height: 5px; }
 .shots__dot {
-  width: 7px; height: 7px; padding: 0; border: none; border-radius: 50%;
+  width: 5px; height: 5px; padding: 0; border: none; border-radius: 50%;
   background: rgba(28, 27, 24, 0.25); cursor: pointer;
   transition: background 0.3s ease, transform 0.3s ease;
 }
 .shots__dot.is-active { background: var(--ink); transform: scale(1.3); }
 @media (prefers-reduced-motion: reduce) { .shots__dot { transition: none; } }
+
+/* стрелки по кадрам: лежат на фото и появляются, когда на карточку наводят
+   курсор. На тач-экранах их нет, там кадры листают пальцем */
+.gallery__card--shots .gallery__media { position: relative; }
+.shots__arrows {
+  position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%);
+  display: flex; justify-content: space-between; padding: 0 14px;
+  pointer-events: none; z-index: 2;
+}
+.shots__arrows .gallery__arrow { width: 40px; height: 40px; opacity: 0; }
+.shots__arrows .gallery__arrow svg { width: 16px; height: 16px; }
+.gallery__card--shots:hover .shots__arrows .gallery__arrow:not(:disabled),
+.shots__arrows .gallery__arrow:focus-visible { opacity: 1; }
+@media (hover: none) { .shots__arrows { display: none; } }
+
+/* на широком экране три карточки отзывов встают в ряд целиком, с равными
+   полями слева и справа, так что листать сам ряд не нужно */
+@media (min-width: 861px) {
+  #reviews .gallery__track {
+    padding-right: var(--gallery-inset); overflow: visible; cursor: auto;
+  }
+  #reviews .gallery__card { flex: 1 1 0; min-width: 0; }
+  #reviews .gallery__arrows,
+  #reviews .gallery__controls { display: none; }
+}
 
 .gallery__controls { margin-top: 40px; }
 .gallery__progress { height: 1px; background: var(--line); position: relative; }

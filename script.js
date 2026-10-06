@@ -531,7 +531,35 @@
       sButtons.forEach(function (dot, i) {
         dot.setAttribute('aria-label', (t ? t('home.reviews.photo') : 'Photo') + ' ' + (i + 1));
       });
+      sPrev.setAttribute('aria-label', t ? t('home.reviews.prevPhoto') : 'Previous photo');
+      sNext.setAttribute('aria-label', t ? t('home.reviews.nextPhoto') : 'Next photo');
     }
+    /* стрелки по кадрам рисуются здесь же, чтобы разметка карточки
+       оставалась короткой */
+    var sMedia = shots.querySelector('.gallery__media');
+    var sArrows = document.createElement('div');
+    sArrows.className = 'shots__arrows';
+    function sArrow(dir) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'gallery__arrow';
+      b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="' +
+        (dir < 0 ? 'M15 4 L7 12 L15 20' : 'M9 4 L17 12 L9 20') +
+        '" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        sTrack.scrollBy({
+          left: dir * sTrack.clientWidth,
+          behavior: reduceMotion ? 'auto' : 'smooth'
+        });
+      });
+      sArrows.appendChild(b);
+      return b;
+    }
+    var sPrev = sArrow(-1);
+    var sNext = sArrow(1);
+    if (sMedia) sMedia.appendChild(sArrows);
+
     sLabel();
     document.addEventListener('address:langchange', sLabel);
 
@@ -544,6 +572,8 @@
       sButtons.forEach(function (dot, i) {
         dot.classList.toggle('is-active', i === idx);
       });
+      sPrev.disabled = idx <= 0;
+      sNext.disabled = idx >= sItems.length - 1;
     }
 
     var sTicking = false;
