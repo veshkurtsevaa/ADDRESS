@@ -206,7 +206,7 @@
       'home.reviews.prev': 'Previous review',
       'home.reviews.next': 'Next review',
       'home.reviews.01.name': 'Switzerland',
-      'home.reviews.01.text': 'Hiking, golfing, fishing and other activities for father and son quality time.',
+      'home.reviews.01.text': 'Hiking, golfing, fishing and other activities for father\nand son quality time.',
       'home.reviews.02.name': 'Italy',
       'home.reviews.02.text': 'A perfectly planned Italian road trip.',
       'home.reviews.03.name': 'Amalfi coast',

@@ -487,6 +487,13 @@ button { font-family: inherit; }
      of the page */
   margin-left: -24px; margin-right: -24px;
 }
+/* подпись над лентой (INDEX, REVIEWS) стоит по левому краю первой фотографии:
+   1cm от края окна, как --gallery-inset у самой ленты */
+#index .section__inner,
+#reviews .section__inner {
+  max-width: none; margin: 0; text-align: left;
+  padding-left: calc(1cm - 24px);
+}
 .gallery__track {
   list-style: none;
   display: flex; gap: 32px;
@@ -529,6 +536,8 @@ button { font-family: inherit; }
   font-size: clamp(24px, 2.4vw, 34px); margin-bottom: 14px;
 }
 .gallery__text { font-size: 17px; opacity: 0.85; margin-bottom: 16px; }
+/* в отзывах строки можно разбить в самом тексте (\n в i18n.js) */
+#reviews .gallery__text { white-space: pre-line; }
 .gallery__link { display: inline-block; }
 
 /* карточки указателя: после первой строки описание уходит в белый, и
